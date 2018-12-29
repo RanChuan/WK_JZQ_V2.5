@@ -13,21 +13,6 @@
 *****************************************************************/
 
 
-//模式2中的错误类型定义
-
-#define ERR_SUCCESS         0x0000			//成功
-#define ERR_FAIL						0x0001			//未知错误
-#define ERR_DATAVALE				0x0002			//数据错误
-#define ERR_DATALENGTH			0x0003			//数据长度错误
-#define ERR_WANTLENGTH			0x0004			//想要读取的数据长度错误
-#define ERR_NULLCMD					0x0005			//不支持的命令类型，
-#define ERR_NOCONNECT				0x0006			//没有连接，一切操作都要在通信开始之后
-#define ERR_NOCJADDR				0x0007			//采集器的地址不是本机绑定的采集器地址
-#define ERR_CANNOTCFG				0x0008			//在不是可配置状态下收到了配置命令
-#define ERR_NOTMYTYPE				0x0009			//所要控制的设备与本机不符
-#define ERR_TIMEOUT					0x000a   		//超时
-#define ERR_OFFLINE         0x000b   		//设备不在线
-#define ERR_NONEADDR				0x000c      //设备地址不对
 
 
 

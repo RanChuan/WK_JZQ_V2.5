@@ -88,7 +88,7 @@ void os_task_init (void);
 //唤醒任务，通过优先级确定,这个函数中断调用可以唤醒任务
 void TaskIntSendMsg(u8 pro,INT32U msg);
 			//效果同上，任务调用
-void TaskSendMsg(u8 pro,INT32U msg);
+u8 TaskSendMsg(u8 pro,INT32U msg);
 
 void TaskMsgZero(void);
 

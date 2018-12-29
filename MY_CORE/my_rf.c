@@ -45,7 +45,7 @@ void my_rf_loop (void * t)
 	RF_SetFocus(OSPrioHighRdy);
 	
 	
-	RF_SetChannel(10); //暂时不用设置信道2018.10.12
+//	RF_SetChannel(10); //暂时不用设置信道2018.10.12 
 	Load_Config();
 	//write_config(); //写入配置到文件
 	Updata_DeviceNum();

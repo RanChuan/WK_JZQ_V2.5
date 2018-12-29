@@ -144,10 +144,13 @@ void TaskIntSendMsg(u8 pro,INT32U msg)
 	if (pro>=TASK_MAX_NUM) return;
 	
 	INT32U tt=TASK_MAX_NUM;
+	if (TCB_Table[pro].pTask)
+	{
+		TCB_Table[pro].MYWork|=msg;
+		TASK_Free|=0x80000000>>pro;//任务切换为就绪状态
+	}
 	if (TCB_Table[pro].Pend)	//任务处于挂起状态
 		return ;
-	TCB_Table[pro].MYWork|=msg;
-	TASK_Free|=0x80000000>>pro;//任务切换为就绪状态
 	
 	if (OS_ONLYME) return;//此时不可进行调度
 	tt=GetZeroNum(TASK_Free);
@@ -165,20 +168,27 @@ void TaskIntSendMsg(u8 pro,INT32U msg)
 
 			//给其他任务发送消息，任务调用这个函数可以唤醒其他任务
 			//由于是在线程状态下调用的，需要加不可调度保护
-void TaskSendMsg(u8 pro,INT32U msg)
+			//0,失败，1，成功
+u8 TaskSendMsg(u8 pro,INT32U msg)
 {
-	if (pro>=TASK_MAX_NUM) return;
+	if (pro>=TASK_MAX_NUM) return 0;
 
  #if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
 		 OS_CPU_SR  cpu_sr;
  #endif
 	INT32U tt=TASK_MAX_NUM;
-	if (TCB_Table[pro].Pend)	//任务处于挂起状态
-		return ;
 	OS_ENTER_CRITICAL(); 
-	TCB_Table[pro].MYWork|=msg;
-	TASK_Free|=0x80000000>>pro;//任务切换为就绪状态
+	if (TCB_Table[pro].pTask)
+	{
+		TCB_Table[pro].MYWork|=msg;
+		TASK_Free|=0x80000000>>pro;//任务切换为就绪状态
+	}
 	OS_EXIT_CRITICAL();
+	if (TCB_Table[pro].pTask==0) return 0;
+ 
+	
+	if (TCB_Table[pro].Pend)	//任务处于挂起状态
+		return 0;
 	tt=GetZeroNum(TASK_Free);
 	if (tt<OSPrioHighRdy)//如果有更高的优先级，强行跳转
 	{
@@ -189,6 +199,7 @@ void TaskSendMsg(u8 pro,INT32U msg)
 			OSCtxSw();
 		}
 	}
+	return 1;
 
 }
 
