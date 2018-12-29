@@ -1,0 +1,20 @@
+
+//温控配置文件描述
+
+//配置文件采用json的形式
+
+//
+
+{
+	"dataType":2,
+	"deviceId":2,
+	"pcbType":11,
+	"centerId":1,
+	"data":
+	{
+		"temp":11.4,
+		"humi":74.7,
+		"pm25":0,
+		"tvoc":0
+	}
+}
