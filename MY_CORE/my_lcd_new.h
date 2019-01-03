@@ -53,7 +53,7 @@ void lcd_advancedSet(void);
 void lcd_turn_page(u8 page);
 
 //改变字符串变量值，地址，数据，数据长度
-void lcd_change_str(u16 addr,u8 *data,u16 len);
+void lcd_change_str(u16 addr,char *data,u16 len);
 
 //改变一个变量
 void lcd_change_value(u16 addr,u16 value);

@@ -13,6 +13,7 @@
 #include "malloc.h" 
 #include "my_autocontrol.h"
 #include "my_cfg.h"
+#include "my_rf_new.h"
 
 #include "beep.h"
 #include "mmc_sd.h"
@@ -46,7 +47,7 @@ int main(void)
 	
 	CreateTask (my_key, 				0, &my_keytack[63],				1)	;					
 	CreateTask (my_lcd_new, 			0, &my_lcdtack[127],			2)	;	 				
-	CreateTask (my_rf_loop, 		0, &rf_looptack[255],			3)	;					
+	CreateTask (my_rf_new_loop, 		0, &rf_looptack[255],			3)	;	 				
 	CreateTask (my_light, 			0, &my_lighttack[127],		4)	;		
 	CreateTask (my_rf_hand, 		0, &my_rf_handtack[255],	5)	;		
 	CreateTask (my_rf_deal, 		0, &my_rf_dealtack[63],		6)	;		

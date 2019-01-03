@@ -45,10 +45,14 @@ u8 send_messeg (u8 type,u8 *data)
 	u16 t=0;
 	for (i=0;i<MESSEG_NUM;i++)//查找有没有空位
 	{
-		if (my_messeg[i].msgto==0) break;
+		if (my_messeg[i].msgto==TASK_MAX_NUM) break;
 	}
 	if (i==MESSEG_NUM) return 1;//缓冲区已满
 	my_messeg[i].msgto=type;
+	
+	my_messeg[i].msgfrom=TASK_MAX_NUM;//加入这两项可以使用新的消息接收函数接收
+	my_messeg[i].msgtype=MSG_TYPE_U8;
+	
 	for (t=0;t<MESSEG_DATA;t++)
 	{
 		my_messeg[i].data.u8dat[t]=data[t];
@@ -78,7 +82,7 @@ u8 get_messeg (u8 type,u8 *data)
 		data[t]=my_messeg[i].data.u8dat[t];
 		my_messeg[i].data.u8dat[t]=0;
 	}
-	my_messeg[i].msgto=0;	//读取过后清空缓冲区
+	my_messeg[i].msgto=TASK_MAX_NUM;	//读取过后清空缓冲区
 	return 0;
 }
 
@@ -114,7 +118,7 @@ u8 wait_messeg (u8 type,u8 *data)
 		data[t]=my_messeg[i].data.u8dat[t];
 		my_messeg[i].data.u8dat[t]=0;
 	}
-	my_messeg[i].msgto=0;	//读取过后清空缓冲区
+	my_messeg[i].msgto=TASK_MAX_NUM;	//读取过后清空缓冲区
 	return 0;
 }
 
@@ -158,7 +162,7 @@ u8 GetFocus (void)
 	参数：errstr 自定义的错误类型
 	返回值：消息错误类型结构体
 **************************************************************/
-msgerr Msg_Send (u8 to_task_pro,msgdata *msg,u8 msgtype, u8 msgflag)//,u16 reterr,char *errstr)
+msgerr Msg_Send (u8 to_task_pro,msgdata *msg,u8 msgtype, u8 msgflag,u16 reterr,char *errstr)
 {
 	u16 i=0;
 	u16 t=0;
@@ -180,7 +184,7 @@ msgerr Msg_Send (u8 to_task_pro,msgdata *msg,u8 msgtype, u8 msgflag)//,u16 reter
 
 	if (msgflag&MSG_FLAG_CEECK)			//要进行消息阻塞检查
 	{
-		for (t=0;t<MESSEG_DATA;t++)
+		for (t=0;t<MESSEG_NUM;t++)
 		{
 			if (my_messeg[t].msgto==to_task_pro) break;
 		}
@@ -199,9 +203,10 @@ msgerr Msg_Send (u8 to_task_pro,msgdata *msg,u8 msgtype, u8 msgflag)//,u16 reter
 
 	my_messeg[i].msgto=to_task_pro;
 	my_messeg[i].msgfrom=OSPrioHighRdy;
-	
-	
-	
+	my_messeg[i].msgtype=msgtype;
+	my_messeg[i].msgflag=msgflag;
+	my_messeg[i].exterr=reterr;
+	my_messeg[i].exterrstr=errstr;
 	//复制消息内容
 	msgCopyMsg(msg,&my_messeg[i].data,msgtype);
 	
@@ -210,33 +215,12 @@ msgerr Msg_Send (u8 to_task_pro,msgdata *msg,u8 msgtype, u8 msgflag)//,u16 reter
 	TaskSendMsg(to_task_pro,TASK_MSG);
 				//判断消息标志
 	
-	if (msgflag&MSG_FLAG_SEND)			//此为发送消息
-	{
-		if (msgflag&MSG_FLAG_ENRE)			//要求返回执行结果
-		{
-			//在这里等待消息执行结果
-	//		Msg_Wait(TASK_MSG,
-		}
-		else
-		{
-			//不需要执行结果，返回成功
-			msgerr err;
-			err.errType=msgNoneErr;
-			err.errStr=msgErrToStr(err.errType);
-			err.msgfrom=my_messeg[i].msgfrom;
-			err.msgto=my_messeg[i].msgto;
-			return err;
-		}
-	}
-	else if (msgflag&MSG_FLAG_RECV)				//此为执行结果返回消息
-	{
-		msgerr err;
-		err.errType=msgNoneErr;
-		err.errStr=msgErrToStr(err.errType);
-		err.msgfrom=my_messeg[i].msgfrom;
-		err.msgto=my_messeg[i].msgto;
-		return err;
-	}
+	msgerr err;
+	err.errType=msgNoneErr;
+	err.errStr=msgErrToStr(err.errType);
+	err.msgfrom=my_messeg[i].msgfrom;
+	err.msgto=my_messeg[i].msgto;
+	return err;
 	
 }
 
@@ -271,10 +255,26 @@ msgerr Msg_Wait (u32 msg_type,msgdata *msg,u8 *datatype,u8 *msgflag)
 					*msgflag=my_messeg[i].msgflag;
 					*datatype=my_messeg[i].msgtype;
 					msgCopyMsg(&my_messeg[i].data,msg,*datatype);
-					my_messeg[i].msgto=0;//去除消息目的地，清除消息
+					my_messeg[i].msgto=TASK_MAX_NUM;//去除消息目的地，清除消息
 					break;
 				default :
 					break;
+			}
+			if (my_messeg[i].exterr)//有执行错误
+			{
+				err.errType=msgMoreErr;
+				err.errStr=msgErrToStr(err.errType);
+				err.extErrType=my_messeg[i].exterr;
+				err.extErrStr=my_messeg[i].exterrstr;
+				err.msgfrom=my_messeg[i].msgfrom;
+				err.msgto=my_messeg[i].msgto;
+			}
+			else
+			{
+				err.errType=msgNoneErr;
+				err.errStr=msgErrToStr(err.errType);
+				err.msgfrom=my_messeg[i].msgfrom;
+				err.msgto=my_messeg[i].msgto;
 			}
 			return err;
 		}
@@ -298,26 +298,38 @@ msgerr Msg_Get (u32 msg_type,msgdata *msg,u8 *datatype,u8 *msgflag)
 	u16 i=0;
 	u16 t=0;
 	msgerr err={0};
-	u32 task_msg=TaskGetMsg();
-	if (msg_type&task_msg)
+	for (i=0;i<MESSEG_NUM;i++)//查找有没有空位
 	{
-		switch (task_msg)
+		if (my_messeg[i].msgto==OSPrioHighRdy) break;
+	}
+	if (i<MESSEG_NUM)
+	{
+		*msgflag=my_messeg[i].msgflag;
+		*datatype=my_messeg[i].msgtype;
+		msgCopyMsg(&my_messeg[i].data,msg,*datatype);
+		my_messeg[i].msgto=TASK_MAX_NUM;//去除消息目的地，清除消息
+
+		if (my_messeg[i].exterr)//有执行错误
 		{
-			case SYS_MSG:
-				break;
-			case TASK_MSG:
-				for (i=0;i<MESSEG_NUM;i++)//查找有没有空位
-				{
-					if (my_messeg[i].msgto==OSPrioHighRdy) break;
-				}
-				*msgflag=my_messeg[i].msgflag;
-				*datatype=my_messeg[i].msgtype;
-				msgCopyMsg(&my_messeg[i].data,msg,*datatype);
-				my_messeg[i].msgto=0;//去除消息目的地，清除消息
-				break;
-			default :
-				break;
+			err.errType=msgMoreErr;
+			err.errStr=msgErrToStr(err.errType);
+			err.extErrType=my_messeg[i].exterr;
+			err.extErrStr=my_messeg[i].exterrstr;
+			err.msgfrom=my_messeg[i].msgfrom;
+			err.msgto=my_messeg[i].msgto;
 		}
+		else
+		{
+			err.errType=msgNoneErr;
+			err.errStr=msgErrToStr(err.errType);
+			err.msgfrom=my_messeg[i].msgfrom;
+			err.msgto=my_messeg[i].msgto;
+		}
+		return err;
+	}else
+	{
+		err.errType=msgNoneMsg;
+		err.errStr=msgErrToStr(err.errType);
 		return err;
 	}
 }
@@ -366,7 +378,7 @@ char *msgErrToStr (u16 errType)
 	switch (errType)
 	{
 		case msgNoneErr:
-			return "没有错误";
+			return "成功";
 		break;
 		case msgUnknownErr:
 			return "未知的错误";

@@ -83,6 +83,7 @@ void sys_cfg_init(void)
 	{
 		SYS_CFG->numberOfDevices=20;
 	}
+	
 	if ((SYS_CFG->numberOfDevices<=20))//已经配置过，读取配置信息
 	{
 		DEV_CFG=mymalloc(sizeof(DeviceDef)*SYS_CFG->numberOfDevices);
@@ -103,6 +104,11 @@ void sys_cfg_init(void)
 			}
 		}
 	}
+	if (SYS_CFG->ifUse==0)
+	{
+		SYS_CFG->numberOfDevices=0;
+	}
+	
 	SYS_CFG->collectorNumber=get_collectorNumber();
 	ENV_VALUE=mymalloc(sizeof(EnvirDef)*SYS_CFG->collectorNumber);//采集器环境值数组
 	
@@ -170,10 +176,11 @@ SysCfgDef *get_syscfg(void)
 	return SYS_CFG;
 }
 
-			//获取指定位置的设备配置
+			//获取指定位置的设备配置,在这里会进入总线中断？
 DeviceDef *get_devcfg(u8 num)
 {
-	return DEV_CFG[num];
+	u8 *data=(u8 *)DEV_CFG;
+	return (DeviceDef *)(data+sizeof(DeviceDef)*num);
 }
 
 

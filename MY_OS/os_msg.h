@@ -39,6 +39,7 @@ enum
 	msgAddrErr=3,				//目标地址错误
 	msgMoreErr=4,				//因其他执行结果造成的错误
 	msgSameType=5,			//已有同类消息在队列中
+	msgNoneMsg=6,				//没有消息
 };
 
 
@@ -74,6 +75,8 @@ typedef struct
 	u8 msgfrom;		//消息源头
 	u8 msgflag;		//消息标志，是否等待返回等
 	u8 msgtype;		//消息类型，
+	u16 exterr;		//执行错误的错误类型
+	char *exterrstr;		//执行时错误的字符串形式
 	msgdata data;				//消息的内容，消息内容根据具体的使用者确定
 } messeg,*pmesseg;
 
@@ -110,7 +113,7 @@ void msgCopyMsg(msgdata *from,msgdata *to,u8 msgtype);
 
 msgerr Msg_Wait (u32 msg_type,msgdata *msg,u8 *datatype,u8 *msgflag);
 
-msgerr Msg_Send (u8 to_task_pro,msgdata *msg,u8 msgtype, u8 msgflag);//,u16 reterr,char *errstr)
+msgerr Msg_Send (u8 to_task_pro,msgdata *msg,u8 msgtype, u8 msgflag,u16 reterr,char *errstr);
 
 msgerr Msg_Get (u32 msg_type,msgdata *msg,u8 *datatype,u8 *msgflag);
 

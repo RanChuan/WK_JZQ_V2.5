@@ -19,14 +19,16 @@
 
 		//定义一个lcd操作的函数指针
 void (*lcd_run)(void);
-
-u8 LCD_MSG_RECV[MESSEG_DATA]={0};//其他任务发送到串口屏的消息
+extern void num_to_str(u8 *str,u8 num1,u8 num2);
+msgdata LCD_MSG;//其他任务发送到串口屏的消息
+u8      LCD_MSGTYPE;
+u8			LCD_MSGFLAG;
+msgerr      LCD_MSGSTATE;
 		//
 void my_lcd_new(void *t)
 {
 	u8 buf[30]={0};u16 reclen;
 	u16 i=0;
-	u8 meg[MESSEG_DATA]={0};
 	Relay_Init();
 	LCD_Init(9600);
 	my_lcd_init();
@@ -37,14 +39,7 @@ void my_lcd_new(void *t)
 	while(1)
 	{
 		delay_ms(1000);
-		if (get_messeg(LCD_MESSEG,meg))
-		{
-			mymemset(LCD_MSG_RECV,0,MESSEG_DATA);
-		}
-		else
-		{
-			mymemcpy(LCD_MSG_RECV,meg,MESSEG_DATA);
-		}
+		LCD_MSGSTATE=Msg_Get(TASK_MSG,&LCD_MSG,&LCD_MSGTYPE,&LCD_MSGFLAG);
 		lcd_run();
 	}
 }
@@ -70,7 +65,8 @@ void lcd_load(void)
 	mymemcpy(&buff2[6],buff,_len);
 	buff2[2]=_len+3;
 	_len=_len+6;
-	LCD_Send_Data(buff2,_len);
+//	LCD_Send_Data(buff2,_len);
+	lcd_change_str	(0x0048,(char *)buff,strlen((char *)buff));
 	
 	delay_ms(300);
 
@@ -200,6 +196,7 @@ void lcd_wizard2(void)
 	u16 reclen=0;
 	u16 key=0;
 	u16 addr=0;
+	msgdata msg={0};
 	LCD_Receive_Data(buff,&reclen);
 	if (reclen)
 	{
@@ -226,8 +223,10 @@ void lcd_wizard2(void)
 		{
 			switch (addr)
 			{
-				case 0x005f://设置设备类型
+				case 0x005f://设置设备类型					
 					get_devcfg(get_syscfg()->numberOfDevices)->devType=str2num(temps);
+					msg.u8dat[0]=(u8)RF_ADD_DEVICE;
+					Msg_Send(3,&msg,MSG_TYPE_U8,MSG_FLAG_CEECK|MSG_FLAG_SEND|MSG_FLAG_ENRE,0,0);
 					break;
 				default:
 					break;
@@ -236,6 +235,27 @@ void lcd_wizard2(void)
 	}
 	else
 	{
+	}
+				//处理任务间消息
+	if (LCD_MSGSTATE.errType!=msgNoneMsg)
+	{
+		if (LCD_MSGSTATE.errType==msgMoreErr)
+		{
+			lcd_change_str(0x0076,LCD_MSGSTATE.extErrStr,strlen(LCD_MSGSTATE.extErrStr));
+		}
+		else 
+		{
+			lcd_change_str(0x0076,LCD_MSGSTATE.errStr,strlen(LCD_MSGSTATE.errStr));
+		}
+		if (LCD_MSGSTATE.errType==msgNoneErr)
+		{
+			char *buff=mymalloc(64);
+			sprintf(buff,"%d",get_devcfg(get_syscfg()->numberOfDevices-1)->devId);
+			lcd_change_str(0x0069,buff,strlen(buff));//显示设备编号
+			lcd_change_str(0x006f,(char *)dbg_getdevname(get_devcfg(get_syscfg()->numberOfDevices-1)->devType),
+				strlen((char *)dbg_getdevname(get_devcfg(get_syscfg()->numberOfDevices-1)->devType)));//显示设备类型
+			myfree(buff);
+		}
 	}
 	myfree(temps);
 	myfree(buff);
@@ -246,7 +266,7 @@ void lcd_wizard2(void)
 void lcd_main(void)
 {
 	u8 *buff=mymalloc(64);
-	u8 *temps=mymalloc(64);
+	char *temps=mymalloc(64);
 	u16 reclen=0;
 	u16 key=0;
 	u16 addr=0;
@@ -278,24 +298,50 @@ void lcd_main(void)
 	else
 	{
 	}
-	if (LCD_MSG_RECV[0]==LCD_DATAUP)//上传环境数据
+	
+	if (LCD_MSGSTATE.errType==msgNoneErr)
 	{
-		extern void num_to_str(u8 *str,u8 num1,u8 num2);
-		u8 num[2]={0};
-		num[0]=((LCD_MSG_RECV[3]<<8)|LCD_MSG_RECV[4])/10;
-		num[1]=((LCD_MSG_RECV[3]<<8)|LCD_MSG_RECV[4])%10;
-		num_to_str(temps,num[0],num[1]);
-		lcd_change_str(0x0080,temps,strlen((char *)temps));
-		delay_us(100);
-		num[0]=((LCD_MSG_RECV[5]<<8)|LCD_MSG_RECV[6])/10;
-		num[1]=((LCD_MSG_RECV[5]<<8)|LCD_MSG_RECV[6])%10;
-		num_to_str(temps,num[0],num[1]);
-		lcd_change_str(0x0086,temps,strlen((char *)temps));
-		delay_us(100);
-		num[0]=((LCD_MSG_RECV[7]<<8)|LCD_MSG_RECV[8])/10;
-		num[1]=((LCD_MSG_RECV[7]<<8)|LCD_MSG_RECV[8])%10;
-		num_to_str(temps,num[0],num[1]);
-		lcd_change_str(0x008b,temps,strlen((char *)temps));
+		
+		if (LCD_MSGTYPE==MSG_TYPE_VOIDPTR)
+		{
+			u8 num[2]={0};
+			num[0]=((EnvirDef*)LCD_MSG.voidptr)->temperture;
+			num[1]=(u8)((EnvirDef*)LCD_MSG.voidptr)->temperture*10%10;
+			num_to_str(temps,num[0],num[1]);
+			lcd_change_str(0x0080,temps,strlen((char *)temps));
+			delay_us(100);
+			num[0]=((EnvirDef*)LCD_MSG.voidptr)->Humidity;
+			num[1]=(u8)((EnvirDef*)LCD_MSG.voidptr)->Humidity*10%10;
+			num_to_str(temps,num[0],num[1]);
+			lcd_change_str(0x0086,temps,strlen((char *)temps));
+			delay_us(100);
+			num[0]=((EnvirDef*)LCD_MSG.voidptr)->tvoc;
+			num[1]=(u8)((EnvirDef*)LCD_MSG.voidptr)->tvoc*10%10;
+			num_to_str(temps,num[0],num[1]);
+			lcd_change_str(0x008b,temps,strlen((char *)temps));
+
+		}
+		else if (LCD_MSGTYPE==MSG_TYPE_U8)
+		{
+			if (LCD_MSG.u8dat[0]==LCD_DATAUP)//上传环境数据
+			{
+				u8 num[2]={0};
+				num[0]=((LCD_MSG.u8dat[3]<<8)|LCD_MSG.u8dat[4])/10;
+				num[1]=((LCD_MSG.u8dat[3]<<8)|LCD_MSG.u8dat[4])%10;
+				num_to_str(temps,num[0],num[1]);
+				lcd_change_str(0x0080,temps,strlen((char *)temps));
+				delay_us(100);
+				num[0]=((LCD_MSG.u8dat[5]<<8)|LCD_MSG.u8dat[6])/10;
+				num[1]=((LCD_MSG.u8dat[5]<<8)|LCD_MSG.u8dat[6])%10;
+				num_to_str(temps,num[0],num[1]);
+				lcd_change_str(0x0086,temps,strlen((char *)temps));
+				delay_us(100);
+				num[0]=((LCD_MSG.u8dat[7]<<8)|LCD_MSG.u8dat[8])/10;
+				num[1]=((LCD_MSG.u8dat[7]<<8)|LCD_MSG.u8dat[8])%10;
+				num_to_str(temps,num[0],num[1]);
+				lcd_change_str(0x008b,temps,strlen((char *)temps));
+			}
+		}
 	}
 	
 	myfree(temps);
@@ -760,7 +806,7 @@ void lcd_turn_page(u8 page)
 
 
 //改变字符串变量值，地址，数据，数据长度
-void lcd_change_str(u16 addr,u8 *data,u16 len)
+void lcd_change_str(u16 addr,char *data,u16 len)
 {
 	u8 *buff2=mymalloc(64);
 	buff2[0]=0x5a;

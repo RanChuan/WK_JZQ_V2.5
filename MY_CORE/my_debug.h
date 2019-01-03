@@ -116,6 +116,10 @@ u16 str2num(u8 *str);
 u8 getnumfstr(u8 *out,u8 *strin,u8 point,u8 length);
 
 
+//根据设备类型获取名称
+u8 *dbg_getdevname(u8 devtype);
+
+
 
 #endif
 

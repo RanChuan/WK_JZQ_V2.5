@@ -80,5 +80,6 @@
 ..\obj\main.o: ..\HARDWARE\KEY\key.h
 ..\obj\main.o: ..\MY_CORE\my_autocontrol.h
 ..\obj\main.o: ..\MY_CORE\my_cfg.h
+..\obj\main.o: ..\MY_CORE\my_rf_new.h
 ..\obj\main.o: ..\HARDWARE\SD_CARD\mmc_sd.h
 ..\obj\main.o: ..\SOFTWARE\FILE\file.h

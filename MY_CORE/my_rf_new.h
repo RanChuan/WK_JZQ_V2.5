@@ -5,15 +5,17 @@
 
 #include "includes.h"
 
-
+void my_rf_new_loop (void *t);
 
 				//处理命令1的数据
 void deal_cmd_0x01 (u16 ret,u16 devid,u8 *rf_data);
 
-void rf_deal_msg(u8 *msg);
+				//处理任务间消息
+void rf_deal_msg(msgdata *,msgerr *,u8 ,u8);
 
 
-
+		//添加设备到集中器
+u16 rf_add_device(void);
 
 
 

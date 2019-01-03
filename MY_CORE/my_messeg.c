@@ -46,6 +46,9 @@ char *err_to_str(u16 err)
 		case ERR_NONEADDR:
 			return "设备地址不对";
 		break;
+		case ERR_ADDRCROSS:
+			return "添加设备时地址越界";
+		break;
 		default:
 			return "其他错误";
 		break;

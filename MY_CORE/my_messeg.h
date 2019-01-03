@@ -31,7 +31,7 @@
 
 
 
-//模式2中的错误类型定义
+//RF通信中的错误类型定义
 
 #define ERR_SUCCESS         0x0000			//成功
 #define ERR_FAIL						0x0001			//未知错误
@@ -46,8 +46,7 @@
 #define ERR_TIMEOUT					0x000a   		//超时
 #define ERR_OFFLINE         0x000b   		//设备不在线
 #define ERR_NONEADDR				0x000c      //设备地址不对
-
-
+#define ERR_ADDRCROSS				0x000d			//添加设备的时候地址超出了地址域
 
 
 
