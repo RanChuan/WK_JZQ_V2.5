@@ -6,6 +6,7 @@
 
 INT8U os_msg_init (void)
 {
+	msgInit();
 	return 0;
 }
 
@@ -168,7 +169,7 @@ msgerr Msg_Send (u8 to_task_pro,msgdata *msg,u8 msgtype, u8 msgflag,u16 reterr,c
 	u16 t=0;
 	for (i=0;i<MESSEG_NUM;i++)//查找有没有空位
 	{
-		if (my_messeg[i].msgto==0) break;
+		if (my_messeg[i].msgto==TASK_MAX_NUM) break;
 	}
 	if (i==MESSEG_NUM) 
 	{
@@ -331,6 +332,19 @@ msgerr Msg_Get (u32 msg_type,msgdata *msg,u8 *datatype,u8 *msgflag)
 		err.errType=msgNoneMsg;
 		err.errStr=msgErrToStr(err.errType);
 		return err;
+	}
+}
+
+
+
+
+			//初始化消息结构体
+void msgInit(void)
+{
+	u16 i=0;
+	for (i=0;i<MESSEG_NUM;i++)
+	{
+		my_messeg[i].msgto=TASK_MAX_NUM;
 	}
 }
 

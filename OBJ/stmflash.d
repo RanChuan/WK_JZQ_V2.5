@@ -43,8 +43,10 @@
 ..\obj\stmflash.o: ..\HARDWARE\MALLOC\malloc.h
 ..\obj\stmflash.o: ..\HARDWARE\W25QXX\flash.h
 ..\obj\stmflash.o: ..\HARDWARE\BEEP\beep.h
-..\obj\stmflash.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\stmflash.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\stmflash.o: ..\UCOSII\CONFIG\includes.h
+..\obj\stmflash.o: ..\HARDWARE\KEY\key.h
+..\obj\stmflash.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\stmflash.o: ..\SOFTWARE\POWER\power.h
 ..\obj\stmflash.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\stmflash.o: ..\SOFTWARE\ENTERNET\enternet.h

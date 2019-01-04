@@ -14,12 +14,11 @@
 
 void Key_Init (void);
 
-void TIME4_Init(void);
 
 u8 Get_Key(u8 keynum);
 
 
-
+void KEY_IRQHandler(void) ;
 
 
 

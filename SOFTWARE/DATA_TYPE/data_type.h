@@ -227,6 +227,10 @@ CtrllimitDef *get_envcfg(u8 num);
 u8 get_collectorNumber(void);
 DeviceDef *get_devcfgbyid(u16 id);
 EnvirDef *get_envirbyid (u16 devid);
+			//获取指定类型设备的数量
+u8 get_DevNumberByType(u8 devtype);
+//获取指定类型设备的状态
+void get_DevStateByType(u8 devtype,u8 *offline,u8 *power,u8 *state);
 
 
 #endif

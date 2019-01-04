@@ -41,8 +41,10 @@
 ..\obj\main.o: ..\HARDWARE\MALLOC\malloc.h
 ..\obj\main.o: ..\HARDWARE\W25QXX\flash.h
 ..\obj\main.o: ..\HARDWARE\BEEP\beep.h
-..\obj\main.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\main.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\main.o: ..\UCOSII\CONFIG\includes.h
+..\obj\main.o: ..\HARDWARE\KEY\key.h
+..\obj\main.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\main.o: ..\SOFTWARE\POWER\power.h
 ..\obj\main.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\main.o: ..\SOFTWARE\ENTERNET\enternet.h
@@ -77,7 +79,6 @@
 ..\obj\main.o: ..\MY_CORE\my_light.h
 ..\obj\main.o: ..\HARDWARE\LIGHT\light.h
 ..\obj\main.o: ..\MY_CORE\my_key.h
-..\obj\main.o: ..\HARDWARE\KEY\key.h
 ..\obj\main.o: ..\MY_CORE\my_autocontrol.h
 ..\obj\main.o: ..\MY_CORE\my_cfg.h
 ..\obj\main.o: ..\MY_CORE\my_rf_new.h

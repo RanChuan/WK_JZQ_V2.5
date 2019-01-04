@@ -42,8 +42,10 @@
 ..\obj\os_msg.o: ..\SYSTEM\delay\delay.h
 ..\obj\os_msg.o: ..\HARDWARE\W25QXX\flash.h
 ..\obj\os_msg.o: ..\HARDWARE\BEEP\beep.h
-..\obj\os_msg.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\os_msg.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\os_msg.o: ..\UCOSII\CONFIG\includes.h
+..\obj\os_msg.o: ..\HARDWARE\KEY\key.h
+..\obj\os_msg.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\os_msg.o: ..\SOFTWARE\POWER\power.h
 ..\obj\os_msg.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\os_msg.o: ..\SOFTWARE\ENTERNET\enternet.h

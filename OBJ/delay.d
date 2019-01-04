@@ -41,8 +41,10 @@
 ..\obj\delay.o: ..\HARDWARE\MALLOC\malloc.h
 ..\obj\delay.o: ..\HARDWARE\W25QXX\flash.h
 ..\obj\delay.o: ..\HARDWARE\BEEP\beep.h
-..\obj\delay.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\delay.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\delay.o: ..\UCOSII\CONFIG\includes.h
+..\obj\delay.o: ..\HARDWARE\KEY\key.h
+..\obj\delay.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\delay.o: ..\SOFTWARE\POWER\power.h
 ..\obj\delay.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\delay.o: ..\SOFTWARE\ENTERNET\enternet.h

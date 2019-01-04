@@ -45,8 +45,9 @@
 ..\obj\my_key.o: ..\HARDWARE\MALLOC\malloc.h
 ..\obj\my_key.o: ..\HARDWARE\W25QXX\flash.h
 ..\obj\my_key.o: ..\HARDWARE\BEEP\beep.h
-..\obj\my_key.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\my_key.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\my_key.o: ..\UCOSII\CONFIG\includes.h
+..\obj\my_key.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\my_key.o: ..\SOFTWARE\POWER\power.h
 ..\obj\my_key.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\my_key.o: ..\SOFTWARE\ENTERNET\enternet.h

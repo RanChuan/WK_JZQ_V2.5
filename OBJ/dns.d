@@ -43,8 +43,10 @@
 ..\obj\dns.o: ..\HARDWARE\MALLOC\malloc.h
 ..\obj\dns.o: ..\HARDWARE\W25QXX\flash.h
 ..\obj\dns.o: ..\HARDWARE\BEEP\beep.h
-..\obj\dns.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\dns.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\dns.o: ..\UCOSII\CONFIG\includes.h
+..\obj\dns.o: ..\HARDWARE\KEY\key.h
+..\obj\dns.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\dns.o: ..\SOFTWARE\POWER\power.h
 ..\obj\dns.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\dns.o: ..\MY_OS\os_mem.h

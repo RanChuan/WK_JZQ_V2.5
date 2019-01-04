@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\UCOSII\CONFIG;..\UCOSII\CORE;..\UCOSII\PORT;..\HARDWARE\KEY;..\HARDWARE\LCD;..\HARDWARE\LIGHT;..\HARDWARE\RELAY;..\HARDWARE\RF;..\HARDWARE\STMFLASH;..\HARDWARE\W5500;..\MY_CORE;..\HARDWARE\MALLOC;..\HARDWARE\BEEP;..\HARDWARE\SD_CARD;..\MY_OS;..\SOFTWARE\CRC8_16;..\SOFTWARE\JSON;..\SOFTWARE\FILE;..\SOFTWARE\DATA_MAP;..\HARDWARE\W25QXX;..\SOFTWARE\DHCP;..\SOFTWARE\ENTERNET;..\SOFTWARE\WK_JSON;..\SOFTWARE\DATA_TYPE;..\SOFTWARE\POWER;..\SOFTWARE\DNS;..\MQTT\mqttsrc;..\SOFTWARE\BAIDU_IOT</IncludePath>
+              <IncludePath>..\HARDWARE\LED;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\STM32F10x_FWLib\inc;..\CORE;..\UCOSII\CONFIG;..\UCOSII\CORE;..\UCOSII\PORT;..\HARDWARE\KEY;..\HARDWARE\LCD;..\HARDWARE\LIGHT;..\HARDWARE\RELAY;..\HARDWARE\RF;..\HARDWARE\STMFLASH;..\HARDWARE\W5500;..\MY_CORE;..\HARDWARE\MALLOC;..\HARDWARE\BEEP;..\HARDWARE\SD_CARD;..\MY_OS;..\SOFTWARE\CRC8_16;..\SOFTWARE\JSON;..\SOFTWARE\FILE;..\SOFTWARE\DATA_MAP;..\HARDWARE\W25QXX;..\SOFTWARE\DHCP;..\SOFTWARE\ENTERNET;..\SOFTWARE\WK_JSON;..\SOFTWARE\DATA_TYPE;..\SOFTWARE\POWER;..\SOFTWARE\DNS;..\MQTT\mqttsrc;..\SOFTWARE\BAIDU_IOT;..\SOFTWARE\TIMER</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -552,6 +552,11 @@
               <FileName>baidu_iot.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SOFTWARE\BAIDU_IOT\baidu_iot.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SOFTWARE\TIMER\timer.c</FilePath>
             </File>
           </Files>
         </Group>

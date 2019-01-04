@@ -47,8 +47,10 @@
 ..\obj\wk_json.o: ..\SYSTEM\delay\delay.h
 ..\obj\wk_json.o: ..\HARDWARE\W25QXX\flash.h
 ..\obj\wk_json.o: ..\HARDWARE\BEEP\beep.h
-..\obj\wk_json.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\wk_json.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\wk_json.o: ..\UCOSII\CONFIG\includes.h
+..\obj\wk_json.o: ..\HARDWARE\KEY\key.h
+..\obj\wk_json.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\wk_json.o: ..\SOFTWARE\POWER\power.h
 ..\obj\wk_json.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\wk_json.o: ..\SOFTWARE\ENTERNET\enternet.h

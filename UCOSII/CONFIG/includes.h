@@ -24,6 +24,8 @@
 #include "delay.h"
 #include "flash.h"
 #include "beep.h"
+#include "timer.h"
+#include "key.h"
 
 #include "data_type.h"
 #include "power.h"

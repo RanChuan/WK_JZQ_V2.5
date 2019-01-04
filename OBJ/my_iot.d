@@ -42,8 +42,10 @@
 ..\obj\my_iot.o: ..\SYSTEM\delay\delay.h
 ..\obj\my_iot.o: ..\HARDWARE\W25QXX\flash.h
 ..\obj\my_iot.o: ..\HARDWARE\BEEP\beep.h
-..\obj\my_iot.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\my_iot.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\my_iot.o: ..\UCOSII\CONFIG\includes.h
+..\obj\my_iot.o: ..\HARDWARE\KEY\key.h
+..\obj\my_iot.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\my_iot.o: ..\SOFTWARE\POWER\power.h
 ..\obj\my_iot.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\my_iot.o: ..\SOFTWARE\ENTERNET\enternet.h

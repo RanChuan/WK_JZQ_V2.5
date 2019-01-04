@@ -207,6 +207,7 @@ void lcd_wizard2(void)
 			switch (key)
 			{
 				case 0x1801://完成按键
+					get_syscfg()->ifUse=1;
 					lcd_run=lcd_main;
 					lcd_turn_page(2);//跳转到主页
 					break;
@@ -227,6 +228,11 @@ void lcd_wizard2(void)
 					get_devcfg(get_syscfg()->numberOfDevices)->devType=str2num(temps);
 					msg.u8dat[0]=(u8)RF_ADD_DEVICE;
 					Msg_Send(3,&msg,MSG_TYPE_U8,MSG_FLAG_CEECK|MSG_FLAG_SEND|MSG_FLAG_ENRE,0,0);
+					lcd_change_str(0x0076,"_",1);
+					delay_us(10);
+					lcd_change_str(0x0069,"_",1);
+					delay_us(10);
+					lcd_change_str(0x006f,"_",1);
 					break;
 				default:
 					break;
@@ -299,6 +305,9 @@ void lcd_main(void)
 	{
 	}
 	
+	
+	
+					//任务间消息处理
 	if (LCD_MSGSTATE.errType==msgNoneErr)
 	{
 		
@@ -356,6 +365,7 @@ void lcd_main(void)
 				//手动稻作
 void lcd_operation(void)
 {
+	static u8 firstin=1;
 	u8 *buff=mymalloc(64);
 	u8 *temps=mymalloc(64);
 	u16 reclen=0;
@@ -371,10 +381,12 @@ void lcd_operation(void)
 			switch (key)
 			{
 				case 0x0701://完成按键
+					firstin=1;
 					lcd_run=lcd_main;
 					lcd_turn_page(1);//跳转到主页
 					break;
 				case 0x0702://升温
+					lcd_msg_to_rf(RF_DEVICE_KT,RF_DEVICE_UP);
 					lcd_change_value(0x00f0,3);
 					break;
 				case 0x0703://加湿
@@ -384,6 +396,7 @@ void lcd_operation(void)
 					lcd_change_value(0x00f2,3);
 					break;
 				case 0x0705://降温
+					lcd_msg_to_rf(RF_DEVICE_KT,RF_DEVICE_DOWN);
 					lcd_change_value(0x00f3,3);
 					break;
 				case 0x0706://除湿
@@ -400,6 +413,24 @@ void lcd_operation(void)
 	else
 	{
 	}
+	
+					//任务间消息处理
+	if (LCD_MSGSTATE.errType==msgNoneErr)
+	{
+		
+	}
+	
+	
+	if (firstin)//初次转入
+	{
+		firstin=0;
+		u8 offline;
+		u8 devpower;
+		u8 devstate;
+		get_DevStateByType(devTypeKT,&offline,&devpower,&devstate);
+//		if (
+	}
+	
 	myfree(temps);
 	myfree(buff);
 
@@ -897,8 +928,16 @@ u16 lcd_deal_str(u8 *data,u8 *strout)
 }
 
 
-
-
+		//发送控制设备命令到设备
+void lcd_msg_to_rf (u8 devtype,u8 key_state)
+{
+	msgdata msg={0};
+	msg.u8dat[0]=devtype;
+	msg.u8dat[1]=RF_CTRL_DEVICE;
+	msg.u8dat[4]=RF_DEVICE_CH;
+	msg.u8dat[5]=key_state;
+	Msg_Send(3,&msg,MSG_TYPE_U8,MSG_FLAG_CEECK|MSG_FLAG_SEND,0,0);
+}	
 
 
 

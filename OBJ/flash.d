@@ -41,8 +41,10 @@
 ..\obj\flash.o: ..\HARDWARE\SD_CARD\fats.h
 ..\obj\flash.o: ..\HARDWARE\MALLOC\malloc.h
 ..\obj\flash.o: ..\HARDWARE\BEEP\beep.h
-..\obj\flash.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\flash.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\flash.o: ..\UCOSII\CONFIG\includes.h
+..\obj\flash.o: ..\HARDWARE\KEY\key.h
+..\obj\flash.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\flash.o: ..\SOFTWARE\POWER\power.h
 ..\obj\flash.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\flash.o: ..\SOFTWARE\ENTERNET\enternet.h

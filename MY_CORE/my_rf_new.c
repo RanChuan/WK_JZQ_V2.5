@@ -20,9 +20,9 @@ void my_rf_new_loop (void *t)
 	while(1)
 	{
 		delay_ms(200);
-		if (get_syscfg()->numberOfDevices)
+		if (get_syscfg()->ifUse)
 		{
-			for (dev_now=1;dev_now<get_syscfg()->numberOfDevices;dev_now++)
+			for (dev_now=0;dev_now<get_syscfg()->numberOfDevices;dev_now++)
 			{
 				err=Msg_Get(TASK_MSG,&msg_recv,&msgtype,&msgflag);
 				if (err.errType==msgNoneErr)
@@ -62,11 +62,11 @@ void deal_cmd_0x01 (u16 ret,u16 devid,u8 *rf_data)
 				get_envirbyid(devid)->temperture=rf_data[17]+rf_data[18]/10.;
 				get_envirbyid(devid)->tvoc=rf_data[21]+rf_data[22]/10.;
 				
-				if (get_syscfg()->collectorNumber==devid)
-				{
-					msg.voidptr=get_envirbyid(devid);//发送环境值结构体
-					Msg_Send(2,&msg,MSG_TYPE_VOIDPTR,MSG_FLAG_CEECK|MSG_FLAG_SEND,0,0);
-				}
+//				if (get_syscfg()->collectorNumber==devid)
+//				{
+//					msg.voidptr=get_envirbyid(devid);//发送环境值结构体
+//					Msg_Send(2,&msg,MSG_TYPE_VOIDPTR,MSG_FLAG_CEECK|MSG_FLAG_SEND,0,0);
+//				}
 			}
 			else
 			{
@@ -136,8 +136,7 @@ void rf_deal_msg(msgdata *msg,msgerr *err,u8 msgtype,u8 msgflag)
 				case RF_ADD_DEVICE:
 					ret=rf_add_device();
 					if (msgflag&MSG_FLAG_ENRE)
-					{
-						
+					{						
 						errstr=err_to_str(ret);
 						Msg_Send(err->msgfrom,&msgsend,MSG_TYPE_U8,MSG_FLAG_CEECK|MSG_FLAG_RECV,ret,errstr);
 					}
@@ -159,15 +158,28 @@ u16 rf_add_device(void)
 	u16 ret=0;
 	u16 addr=0;
 	u8 devtype=0;
-	ret=Cmd_0x06(0,1);
+	u8 i=0;
+	for (i=0;i<10;i++)
+	{
+		ret=Cmd_0x06(0,1);
+		if (ret==ERR_SUCCESS) break;
+	}
 	if (ret) return ret;
 	devtype=get_devcfg(get_syscfg()->numberOfDevices)->devType;
-	addr=get_syscfg()->addressDomainL+get_syscfg()->numberOfDevices;
+	addr=get_syscfg()->addressDomainL+get_syscfg()->numberOfDevices+1;
 	if (addr>get_syscfg()->addressDomainH) return ERR_ADDRCROSS;//地址越界
-	ret=Cmd_0x07(addr,devtype);
+	for (i=0;i<10;i++)
+	{
+		ret=Cmd_0x07(addr,devtype);
+		if (ret==ERR_SUCCESS) break;
+	}
 	if ( ret==ERR_SUCCESS)
 	{
-		ret=Cmd_0x06(0,0);
+		for (i=0;i<10;i++)
+		{
+			ret=Cmd_0x06(0,0);
+			if (ret==ERR_SUCCESS) break;
+		}
 	}
 	if (ret==ERR_SUCCESS)
 	{

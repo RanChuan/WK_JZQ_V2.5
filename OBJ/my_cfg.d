@@ -47,8 +47,10 @@
 ..\obj\my_cfg.o: ..\HARDWARE\MALLOC\malloc.h
 ..\obj\my_cfg.o: ..\HARDWARE\W25QXX\flash.h
 ..\obj\my_cfg.o: ..\HARDWARE\BEEP\beep.h
-..\obj\my_cfg.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\my_cfg.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\my_cfg.o: ..\UCOSII\CONFIG\includes.h
+..\obj\my_cfg.o: ..\HARDWARE\KEY\key.h
+..\obj\my_cfg.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\my_cfg.o: ..\SOFTWARE\POWER\power.h
 ..\obj\my_cfg.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\my_cfg.o: ..\SOFTWARE\ENTERNET\enternet.h

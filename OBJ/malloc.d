@@ -41,8 +41,10 @@
 ..\obj\malloc.o: ..\SYSTEM\delay\delay.h
 ..\obj\malloc.o: ..\HARDWARE\W25QXX\flash.h
 ..\obj\malloc.o: ..\HARDWARE\BEEP\beep.h
-..\obj\malloc.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\malloc.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\malloc.o: ..\UCOSII\CONFIG\includes.h
+..\obj\malloc.o: ..\HARDWARE\KEY\key.h
+..\obj\malloc.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\malloc.o: ..\SOFTWARE\POWER\power.h
 ..\obj\malloc.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\malloc.o: ..\SOFTWARE\ENTERNET\enternet.h

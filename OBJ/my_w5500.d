@@ -47,8 +47,10 @@
 ..\obj\my_w5500.o: ..\HARDWARE\SD_CARD\fats.h
 ..\obj\my_w5500.o: ..\HARDWARE\W25QXX\flash.h
 ..\obj\my_w5500.o: ..\HARDWARE\BEEP\beep.h
-..\obj\my_w5500.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\my_w5500.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\my_w5500.o: ..\UCOSII\CONFIG\includes.h
+..\obj\my_w5500.o: ..\HARDWARE\KEY\key.h
+..\obj\my_w5500.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\my_w5500.o: ..\SOFTWARE\POWER\power.h
 ..\obj\my_w5500.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\my_w5500.o: ..\SOFTWARE\ENTERNET\enternet.h

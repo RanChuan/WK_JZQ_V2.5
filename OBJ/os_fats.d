@@ -42,8 +42,10 @@
 ..\obj\os_fats.o: ..\SYSTEM\delay\delay.h
 ..\obj\os_fats.o: ..\HARDWARE\W25QXX\flash.h
 ..\obj\os_fats.o: ..\HARDWARE\BEEP\beep.h
-..\obj\os_fats.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\os_fats.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\os_fats.o: ..\UCOSII\CONFIG\includes.h
+..\obj\os_fats.o: ..\HARDWARE\KEY\key.h
+..\obj\os_fats.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\os_fats.o: ..\SOFTWARE\POWER\power.h
 ..\obj\os_fats.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\os_fats.o: ..\SOFTWARE\ENTERNET\enternet.h

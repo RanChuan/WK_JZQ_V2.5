@@ -42,8 +42,10 @@
 ..\obj\enternet.o: ..\SYSTEM\delay\delay.h
 ..\obj\enternet.o: ..\HARDWARE\W25QXX\flash.h
 ..\obj\enternet.o: ..\HARDWARE\BEEP\beep.h
-..\obj\enternet.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\enternet.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\enternet.o: ..\UCOSII\CONFIG\includes.h
+..\obj\enternet.o: ..\HARDWARE\KEY\key.h
+..\obj\enternet.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\enternet.o: ..\SOFTWARE\POWER\power.h
 ..\obj\enternet.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\enternet.o: ..\SOFTWARE\ENTERNET\enternet.h

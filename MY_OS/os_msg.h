@@ -117,5 +117,8 @@ msgerr Msg_Send (u8 to_task_pro,msgdata *msg,u8 msgtype, u8 msgflag,u16 reterr,c
 
 msgerr Msg_Get (u32 msg_type,msgdata *msg,u8 *datatype,u8 *msgflag);
 
+			//初始化消息结构体
+void msgInit(void);
+
 #endif
 

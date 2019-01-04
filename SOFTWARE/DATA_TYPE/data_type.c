@@ -200,7 +200,8 @@ DeviceDef *get_devcfgbyid(u16 id)
 			//获取指定位置的环境配置
 CtrllimitDef *get_envcfg(u8 num)
 {
-	return ENV_CFG[num];
+	u8 *data=(u8 *)ENV_CFG;
+	return (CtrllimitDef *)(data+sizeof(CtrllimitDef)*num);
 }
 
 			//获取采集器的数量
@@ -216,6 +217,45 @@ u8 get_collectorNumber(void)
 	}
 	return collector_num;
 }
+
+
+
+			//获取指定类型设备的数量
+u8 get_DevNumberByType(u8 devtype)
+{
+	u8 collector_num=0;
+	for (u8 i=0;i<get_syscfg()->numberOfDevices;i++)
+	{
+		if (get_devcfg(i)->devType==devtype)
+		{
+			collector_num++;
+		}
+	}
+	return collector_num;
+}
+
+//获取指定类型设备的状态
+void get_DevStateByType(u8 devtype,u8 *offline,u8 *power,u8 *state)
+{
+	u8 collector_num=0;
+	*offline=offlineYes;
+	for (u8 i=0;i<get_syscfg()->numberOfDevices;i++)
+	{
+		if (get_devcfg(i)->devType==devtype)
+		{
+			if (*offline==offlineYes)
+			{
+				*offline=get_devcfg(i)->offline;
+			}
+			if (*offline==offlineNo)
+			{
+				*power=get_devcfg(i)->devPower;
+				*power-get_devcfg(i)->devState;
+			}
+		}
+	}
+}
+
 
 
 //根据ID获取环境值结构体，在没有的情况下自动填充

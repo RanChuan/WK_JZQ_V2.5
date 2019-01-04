@@ -66,6 +66,8 @@ u16 lcd_deal_key(u8 *data);
 u16 lcd_deal_str(u8 *data,u8 *strout);
 
 
+		//发送控制设备命令到设备
+void lcd_msg_to_rf (u8 devtype,u8 key_state);
 
 
 #endif

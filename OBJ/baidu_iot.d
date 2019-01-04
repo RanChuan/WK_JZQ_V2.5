@@ -42,8 +42,10 @@
 ..\obj\baidu_iot.o: ..\SYSTEM\delay\delay.h
 ..\obj\baidu_iot.o: ..\HARDWARE\W25QXX\flash.h
 ..\obj\baidu_iot.o: ..\HARDWARE\BEEP\beep.h
-..\obj\baidu_iot.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\baidu_iot.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\baidu_iot.o: ..\UCOSII\CONFIG\includes.h
+..\obj\baidu_iot.o: ..\HARDWARE\KEY\key.h
+..\obj\baidu_iot.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\baidu_iot.o: ..\SOFTWARE\POWER\power.h
 ..\obj\baidu_iot.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\baidu_iot.o: ..\SOFTWARE\ENTERNET\enternet.h

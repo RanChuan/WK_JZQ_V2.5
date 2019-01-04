@@ -45,8 +45,10 @@
 ..\obj\my_lcd.o: ..\SYSTEM\delay\delay.h
 ..\obj\my_lcd.o: ..\HARDWARE\W25QXX\flash.h
 ..\obj\my_lcd.o: ..\HARDWARE\BEEP\beep.h
-..\obj\my_lcd.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\my_lcd.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\my_lcd.o: ..\UCOSII\CONFIG\includes.h
+..\obj\my_lcd.o: ..\HARDWARE\KEY\key.h
+..\obj\my_lcd.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\my_lcd.o: ..\SOFTWARE\POWER\power.h
 ..\obj\my_lcd.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\my_lcd.o: ..\SOFTWARE\ENTERNET\enternet.h
@@ -76,4 +78,3 @@
 ..\obj\my_lcd.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\my_lcd.o: ..\HARDWARE\RELAY\relay.h
 ..\obj\my_lcd.o: ..\MY_CORE\my_key.h
-..\obj\my_lcd.o: ..\HARDWARE\KEY\key.h

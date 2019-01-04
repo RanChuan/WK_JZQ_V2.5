@@ -190,6 +190,9 @@ void dbg_info (void)
 		memsize/1024,memsize*mem_perused()/100/1024,memsize*(100-mem_perused())/100/1024,mem_perused());
 	udp_send(1,DBG_IP,DBG_PORT,(u8*)txtbuff,strlen(txtbuff));
 	
+	sprintf(txtbuff,"系统已运行 %d 秒\r\n",getSysRunTime());
+	udp_send(1,DBG_IP,DBG_PORT,(u8*)txtbuff,strlen(txtbuff));
+	
 	sprintf(txtbuff,"程序位置：-- %#X -- \r\n",SCB->VTOR);
 	udp_send(1,DBG_IP,DBG_PORT,(u8*)txtbuff,strlen(txtbuff));
 

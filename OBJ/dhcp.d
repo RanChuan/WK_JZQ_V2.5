@@ -42,8 +42,10 @@
 ..\obj\dhcp.o: ..\SYSTEM\delay\delay.h
 ..\obj\dhcp.o: ..\HARDWARE\W25QXX\flash.h
 ..\obj\dhcp.o: ..\HARDWARE\BEEP\beep.h
-..\obj\dhcp.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\dhcp.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\dhcp.o: ..\UCOSII\CONFIG\includes.h
+..\obj\dhcp.o: ..\HARDWARE\KEY\key.h
+..\obj\dhcp.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\dhcp.o: ..\SOFTWARE\POWER\power.h
 ..\obj\dhcp.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\dhcp.o: ..\SOFTWARE\ENTERNET\enternet.h

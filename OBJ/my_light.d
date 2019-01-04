@@ -43,8 +43,10 @@
 ..\obj\my_light.o: ..\SYSTEM\delay\delay.h
 ..\obj\my_light.o: ..\HARDWARE\W25QXX\flash.h
 ..\obj\my_light.o: ..\HARDWARE\BEEP\beep.h
-..\obj\my_light.o: ..\SOFTWARE\DATA_TYPE\data_type.h
+..\obj\my_light.o: ..\SOFTWARE\TIMER\timer.h
 ..\obj\my_light.o: ..\UCOSII\CONFIG\includes.h
+..\obj\my_light.o: ..\HARDWARE\KEY\key.h
+..\obj\my_light.o: ..\SOFTWARE\DATA_TYPE\data_type.h
 ..\obj\my_light.o: ..\SOFTWARE\POWER\power.h
 ..\obj\my_light.o: ..\SOFTWARE\DNS\dns.h
 ..\obj\my_light.o: ..\SOFTWARE\ENTERNET\enternet.h
