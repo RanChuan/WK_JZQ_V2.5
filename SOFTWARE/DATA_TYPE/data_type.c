@@ -238,7 +238,7 @@ u8 get_DevNumberByType(u8 devtype)
 void get_DevStateByType(u8 devtype,u8 *offline,u8 *power,u8 *state)
 {
 	u8 collector_num=0;
-	*offline=offlineYes;
+	//*offline=offlineYes;
 	for (u8 i=0;i<get_syscfg()->numberOfDevices;i++)
 	{
 		if (get_devcfg(i)->devType==devtype)
@@ -250,7 +250,7 @@ void get_DevStateByType(u8 devtype,u8 *offline,u8 *power,u8 *state)
 			if (*offline==offlineNo)
 			{
 				*power=get_devcfg(i)->devPower;
-				*power-get_devcfg(i)->devState;
+				*state=get_devcfg(i)->devState;
 			}
 		}
 	}

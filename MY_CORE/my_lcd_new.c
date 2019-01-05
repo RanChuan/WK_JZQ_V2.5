@@ -428,7 +428,139 @@ void lcd_operation(void)
 		u8 devpower;
 		u8 devstate;
 		get_DevStateByType(devTypeKT,&offline,&devpower,&devstate);
-//		if (
+		if (offline==offlineYes)
+		{
+			lcd_change_value(0x00f0,0);//不可操作
+			delay_us(10);
+			lcd_change_value(0x00f3,0);//不可操作
+		}
+		else
+		{
+			if (devpower==devPowerOff)
+			{
+				lcd_change_value(0x00f0,1);//关
+				delay_us(10);
+				lcd_change_value(0x00f3,1);//关
+			}
+			else
+			{
+				if (devstate==devStateUp)
+				{
+					lcd_change_value(0x00f0,2);//开
+					delay_us(10);
+					lcd_change_value(0x00f3,1);//关
+				}
+				else if (devstate==devStateDown)
+				{
+					lcd_change_value(0x00f0,1);//关
+					delay_us(10);
+					lcd_change_value(0x00f3,2);//开
+				}
+				else
+				{
+					lcd_change_value(0x00f0,0);//关
+					delay_us(10);
+					lcd_change_value(0x00f3,0);//关
+				}
+			}
+		}
+		get_DevStateByType(devTypeYT,&offline,&devpower,&devstate);
+		if (offline==offlineYes)
+		{
+			lcd_change_value(0x00f1,0);//不可操作
+			delay_us(10);
+			lcd_change_value(0x00f4,0);//不可操作
+		}
+		else
+		{
+			if (devpower==devPowerOff)
+			{
+				lcd_change_value(0x00f1,1);//关
+				delay_us(10);
+				lcd_change_value(0x00f4,1);//关
+			}
+			else
+			{
+				if (devstate==devStateUp)
+				{
+					lcd_change_value(0x00f1,2);//开
+					delay_us(10);
+					lcd_change_value(0x00f4,1);//关
+				}
+				else if (devstate==devStateDown)
+				{
+					lcd_change_value(0x00f1,1);//关
+					delay_us(10);
+					lcd_change_value(0x00f4,2);//开
+				}
+				else
+				{
+					lcd_change_value(0x00f1,0);//关
+					delay_us(10);
+					lcd_change_value(0x00f4,0);//关
+				}
+			}
+		}
+		if (offline==offlineYes)
+			get_DevStateByType(devTypeCS,&offline,&devpower,&devstate);
+		if (offline==offlineYes)
+		{
+			lcd_change_value(0x00f4,0);//不可操作
+		}
+		else
+		{
+			if (devpower==devPowerOff)
+			{
+				lcd_change_value(0x00f4,1);//关
+			}
+			else
+			{
+				if (devstate==devStateDown)
+					lcd_change_value(0x00f4,2);//开
+			}
+		}
+		if (offline==offlineYes)
+			get_DevStateByType(devTypeJS,&offline,&devpower,&devstate);
+		if (offline==offlineYes)
+		{
+			lcd_change_value(0x00f1,0);//不可操作
+		}
+		else
+		{
+			if (devpower==devPowerOff)
+			{
+				lcd_change_value(0x00f1,1);//关
+			}
+			else
+			{
+				if (devstate==devStateUp)
+					lcd_change_value(0x00f1,2);//开
+			}
+		}
+		get_DevStateByType(devTypeJH,&offline,&devpower,&devstate);
+		if (offline==offlineYes)
+		{
+			lcd_change_value(0x00f2,0);//不可操作
+		}
+		else
+		{
+			if (devpower==devPowerOff)
+			{
+				lcd_change_value(0x00f2,1);//关
+			}
+			else
+			{
+				lcd_change_value(0x00f2,2);//开
+			}
+		}
+		if (get_syscfg()->handMode)
+		{
+			lcd_change_value(0x00f5,2);
+		}
+		else
+		{
+			lcd_change_value(0x00f5,1);
+		}
 	}
 	
 	myfree(temps);

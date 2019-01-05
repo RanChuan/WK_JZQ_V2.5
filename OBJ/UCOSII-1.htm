@@ -3,7 +3,7 @@
 <title>Static Call Graph - [..\OBJ\UCOSII-1.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image ..\OBJ\UCOSII-1.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Fri Jan 04 16:47:46 2019
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Sat Jan 05 14:46:15 2019
 <BR><P>
 <H3>Maximum Stack Usage =        440 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -3412,6 +3412,7 @@ Global Symbols
 <LI><a href="#[23f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;server_read_data
 <LI><a href="#[1ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tcp_connect
 <LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lcd_wizard2
+<LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lcd_operation
 <LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lcd_main
 </UL>
 
@@ -3581,7 +3582,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[1a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dbg_info
 </UL>
 
-<P><STRONG><a name="[1d0]"></a>get_DevStateByType</STRONG> (Thumb, 88 bytes, Stack size 24 bytes, data_type.o(i.get_DevStateByType))
+<P><STRONG><a name="[1d0]"></a>get_DevStateByType</STRONG> (Thumb, 90 bytes, Stack size 24 bytes, data_type.o(i.get_DevStateByType))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = get_DevStateByType
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_syscfg
@@ -3656,6 +3657,7 @@ Global Symbols
 <LI><a href="#[237]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rf_add_device
 <LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lcd_wizard2
 <LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lcd_wizard1
+<LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lcd_operation
 </UL>
 
 <P><STRONG><a name="[195]"></a>into_cfg</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, my_cfg.o(i.into_cfg))
@@ -3984,11 +3986,11 @@ Global Symbols
 <LI> my_lcd_new.o(i.lcd_power)
 <LI> my_lcd_new.o(i.lcd_setchoose)
 <LI> my_lcd_new.o(i.lcd_timeSet)
-<LI> my_lcd_new.o(i.lcd_wizard2)
 <LI> my_lcd_new.o(i.lcd_about)
 <LI> my_lcd_new.o(i.lcd_energySaving)
 <LI> my_lcd_new.o(i.lcd_environmentalControl)
 <LI> my_lcd_new.o(i.lcd_load)
+<LI> my_lcd_new.o(i.lcd_wizard2)
 </UL>
 <P><STRONG><a name="[1f1]"></a>lcd_msg_to_rf</STRONG> (Thumb, 60 bytes, Stack size 56 bytes, my_lcd_new.o(i.lcd_msg_to_rf))
 <BR><BR>[Stack]<UL><LI>Max Depth = 152 + Unknown Stack Size
@@ -3999,13 +4001,15 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lcd_operation
 </UL>
 
-<P><STRONG><a name="[62]"></a>lcd_operation</STRONG> (Thumb, 222 bytes, Stack size 40 bytes, my_lcd_new.o(i.lcd_operation))
+<P><STRONG><a name="[62]"></a>lcd_operation</STRONG> (Thumb, 756 bytes, Stack size 40 bytes, my_lcd_new.o(i.lcd_operation))
 <BR><BR>[Stack]<UL><LI>Max Depth = 192 + Unknown Stack Size
 <LI>Call Chain = lcd_operation &rArr; lcd_msg_to_rf &rArr; Msg_Send &rArr; TaskSendMsg
 </UL>
-<BR>[Calls]<UL><LI><a href="#[1e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Receive_Data
+<BR>[Calls]<UL><LI><a href="#[1e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_us
+<LI><a href="#[1e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Receive_Data
 <LI><a href="#[9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mymalloc
 <LI><a href="#[a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;myfree
+<LI><a href="#[1d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_syscfg
 <LI><a href="#[1d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_DevStateByType
 <LI><a href="#[1eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lcd_turn_page
 <LI><a href="#[1f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lcd_msg_to_rf
@@ -4102,8 +4106,8 @@ Global Symbols
 <LI><a href="#[1ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;str2num
 <LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> my_lcd_new.o(i.lcd_wizard2)
-<LI> my_lcd_new.o(i.lcd_load)
+<BR>[Address Reference Count : 2]<UL><LI> my_lcd_new.o(i.lcd_load)
+<LI> my_lcd_new.o(i.lcd_wizard2)
 </UL>
 <P><STRONG><a name="[6a]"></a>lcd_wizard2</STRONG> (Thumb, 470 bytes, Stack size 88 bytes, my_lcd_new.o(i.lcd_wizard2))
 <BR><BR>[Stack]<UL><LI>Max Depth = 224 + Unknown Stack Size

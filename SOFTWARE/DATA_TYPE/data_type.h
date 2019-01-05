@@ -202,6 +202,8 @@ typedef struct
 	u16 findServer;//是否自动寻找服务器
 	u16 executingScripts;//是否执行脚本
 	u16 mainCollectorId;//主要的采集器ID
+	
+	u16 handMode;//手动模式
 } SysCfgDef;
 
 
