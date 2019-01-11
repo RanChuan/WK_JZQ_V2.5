@@ -131,10 +131,18 @@ void rf_deal_msg(msgdata *msg,msgerr *err,u8 msgtype,u8 msgflag)
 	switch (msgtype)
 	{
 		case MSG_TYPE_U8:
-			switch (msg->u8dat[0])
+			switch (msg->u8dat[1])
 			{
 				case RF_ADD_DEVICE:
 					ret=rf_add_device();
+					if (msgflag&MSG_FLAG_ENRE)
+					{						
+						errstr=err_to_str(ret);
+						Msg_Send(err->msgfrom,&msgsend,MSG_TYPE_U8,MSG_FLAG_CEECK|MSG_FLAG_RECV,ret,errstr);
+					}
+					break;
+				case RF_CTRL_DEVICE:
+					ret=rf_ctrl_device(msg);
 					if (msgflag&MSG_FLAG_ENRE)
 					{						
 						errstr=err_to_str(ret);
@@ -188,6 +196,87 @@ u16 rf_add_device(void)
 		get_syscfg()->numberOfDevices++;//添加了一个设备
 	}
 	return ret;
+}
+
+
+
+		//控制设备,消息类型是MSG_TYPE_U8
+u16 rf_ctrl_device(msgdata *msg)
+{
+	u16 addr=(msg->u8dat[2]<<8)|msg->u8dat[3];
+	u16 ret=0;
+	u16 devidbuff[10]={0};
+	u8 devnum=0;
+	u8 devpower=msg->u8dat[4];
+	u8 devstate=msg->u8dat[5];
+	u8 i=0;
+	if (msg->u8dat[0]==RF_DEVICE_ADDR)//根据设备地址控制
+	{
+		for (i=0;i<10;i++)
+		{
+			ret=Cmd_0x03(addr,get_devcfgbyid(addr)->devType,devpower,devstate);
+			if (ret==ERR_SUCCESS) break;
+		}
+		if (ret==ERR_SUCCESS)
+		{
+			get_devcfgbyid(addr)->devPower=devpower;
+			get_devcfgbyid(addr)->devState=devstate;
+		}
+		else
+		{
+			get_devcfgbyid(addr)->offline=offlineYes;
+		}
+	}
+	else				//根据设备类型控制
+	{
+		devnum=get_OnLineDevIdListByType(msg->u8dat[0],devidbuff);
+		u8 oldoffline=0;
+		u8 oldpower=0;
+		u8 oldstate=0;
+		get_DevStateByType (msg->u8dat[0],&oldoffline,&oldpower,&oldstate);
+		if (devpower==2)//反向
+		{
+			if (oldoffline==offlineNo)
+			{
+				if (oldpower==devPowerOff)
+				{
+					devpower=devPowerOn;
+				}
+				else
+				{
+					if (oldstate!=0)//有状态
+					{
+						if (oldstate==devstate)
+						{
+							devpower=devPowerOff;
+							devstate=0;
+						}
+					}
+//					else				//这里不注释会进入总线错误
+//					{
+//						devpower=devPowerOn;
+//					}
+				}
+			}
+		}
+		while(devnum--)
+		{
+			for (i=0;i<10;i++)
+			{
+				ret=Cmd_0x03(devidbuff[devnum],msg->u8dat[0],devpower,devstate);
+				if (ret==ERR_SUCCESS) break;
+			}
+			if (ret==ERR_SUCCESS)
+			{
+				get_devcfgbyid(devidbuff[devnum])->devPower=devpower;
+				get_devcfgbyid(devidbuff[devnum])->devState=devstate;
+			}
+			else 
+			{
+				get_devcfgbyid(devidbuff[devnum])->offline=offlineYes;
+			}
+		}
+	}
 }
 
 

@@ -18,7 +18,7 @@ void rf_deal_msg(msgdata *,msgerr *,u8 ,u8);
 u16 rf_add_device(void);
 
 
-
+u16 rf_ctrl_device(msgdata *msg);
 
 
 ////////////////////以下是一些辅助函数//////////////////////////////

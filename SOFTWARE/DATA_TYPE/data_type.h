@@ -217,10 +217,10 @@ typedef struct
 //获取系统配置文件0,失败
 u8 load_sys_cfg(SysCfgDef *buff);
 u8 save_sys_cfg(SysCfgDef *buff);
-u8 load_dev_cfg(DeviceDef **buff,u8 num);
-u8 save_dev_cfg(DeviceDef **buff,u8 num);
-u8 load_env_cfg(CtrllimitDef **buff,u8 num);
-u8 save_env_cfg(CtrllimitDef **buff,u8 num);
+u8 load_dev_cfg(DeviceDef *buff,u8 num);
+u8 save_dev_cfg(DeviceDef *buff,u8 num);
+u8 load_env_cfg(CtrllimitDef *buff,u8 num);
+u8 save_env_cfg(CtrllimitDef *buff,u8 num);
 
 void sys_cfg_init(void);
 SysCfgDef *get_syscfg(void);
@@ -234,6 +234,7 @@ u8 get_DevNumberByType(u8 devtype);
 //获取指定类型设备的状态
 void get_DevStateByType(u8 devtype,u8 *offline,u8 *power,u8 *state);
 
+u8 get_OnLineDevIdListByType (u8 devtype,u16 *idbuff);
 
 #endif
 

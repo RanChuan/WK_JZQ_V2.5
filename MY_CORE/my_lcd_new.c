@@ -226,7 +226,7 @@ void lcd_wizard2(void)
 			{
 				case 0x005f://设置设备类型					
 					get_devcfg(get_syscfg()->numberOfDevices)->devType=str2num(temps);
-					msg.u8dat[0]=(u8)RF_ADD_DEVICE;
+					msg.u8dat[1]=(u8)RF_ADD_DEVICE;
 					Msg_Send(3,&msg,MSG_TYPE_U8,MSG_FLAG_CEECK|MSG_FLAG_SEND|MSG_FLAG_ENRE,0,0);
 					lcd_change_str(0x0076,"_",1);
 					delay_us(10);
@@ -378,6 +378,9 @@ void lcd_operation(void)
 		key=lcd_deal_key(buff);
 		if (key)
 		{
+			u8 offline;
+			u8 devpower;
+			u8 devstate;
 			switch (key)
 			{
 				case 0x0701://完成按键
@@ -386,24 +389,53 @@ void lcd_operation(void)
 					lcd_turn_page(1);//跳转到主页
 					break;
 				case 0x0702://升温
-					lcd_msg_to_rf(RF_DEVICE_KT,RF_DEVICE_UP);
-					lcd_change_value(0x00f0,3);
+					get_DevStateByType(devTypeKT,&offline,&devpower,&devstate);
+					if (offline==offlineNo)
+					{
+						lcd_msg_to_rf(RF_DEVICE_KT,RF_DEVICE_UP);
+						lcd_change_value(0x00f0,3);
+					}
 					break;
 				case 0x0703://加湿
-					lcd_change_value(0x00f1,3);
+					get_DevStateByType(devTypeJS,&offline,&devpower,&devstate);
+					if (offline==offlineNo)
+					{
+						lcd_change_value(0x00f1,3);
+					}
 					break;
 				case 0x0704://净化
-					lcd_change_value(0x00f2,3);
+					get_DevStateByType(devTypeJH,&offline,&devpower,&devstate);
+					if (offline==offlineNo)
+					{
+						lcd_change_value(0x00f2,3);
+					}
 					break;
 				case 0x0705://降温
-					lcd_msg_to_rf(RF_DEVICE_KT,RF_DEVICE_DOWN);
-					lcd_change_value(0x00f3,3);
+					get_DevStateByType(devTypeKT,&offline,&devpower,&devstate);
+					if (offline==offlineNo)
+					{
+						lcd_msg_to_rf(RF_DEVICE_KT,RF_DEVICE_DOWN);
+						lcd_change_value(0x00f3,3);
+					}
 					break;
 				case 0x0706://除湿
-					lcd_change_value(0x00f4,3);
+					get_DevStateByType(devTypeCS,&offline,&devpower,&devstate);
+					if (offline==offlineNo)
+					{
+						lcd_msg_to_rf(RF_DEVICE_CS,RF_DEVICE_DOWN);
+						lcd_change_value(0x00f4,3);
+					}
 					break;
 				case 0x0707://手动
-					lcd_change_value(0x00f5,3);
+					get_syscfg()->handMode=!get_syscfg()->handMode;
+					if (get_syscfg()->handMode)
+					{
+						lcd_change_value(0x00f5,2);
+					}
+					else
+					{
+						lcd_change_value(0x00f5,1);
+					}
 					break;
 				default:
 					break;
@@ -421,7 +453,7 @@ void lcd_operation(void)
 	}
 	
 	
-	if (firstin)//初次转入
+//	if (firstin)//初次转入
 	{
 		firstin=0;
 		u8 offline;
@@ -464,45 +496,7 @@ void lcd_operation(void)
 				}
 			}
 		}
-		get_DevStateByType(devTypeYT,&offline,&devpower,&devstate);
-		if (offline==offlineYes)
-		{
-			lcd_change_value(0x00f1,0);//不可操作
-			delay_us(10);
-			lcd_change_value(0x00f4,0);//不可操作
-		}
-		else
-		{
-			if (devpower==devPowerOff)
-			{
-				lcd_change_value(0x00f1,1);//关
-				delay_us(10);
-				lcd_change_value(0x00f4,1);//关
-			}
-			else
-			{
-				if (devstate==devStateUp)
-				{
-					lcd_change_value(0x00f1,2);//开
-					delay_us(10);
-					lcd_change_value(0x00f4,1);//关
-				}
-				else if (devstate==devStateDown)
-				{
-					lcd_change_value(0x00f1,1);//关
-					delay_us(10);
-					lcd_change_value(0x00f4,2);//开
-				}
-				else
-				{
-					lcd_change_value(0x00f1,0);//关
-					delay_us(10);
-					lcd_change_value(0x00f4,0);//关
-				}
-			}
-		}
-		if (offline==offlineYes)
-			get_DevStateByType(devTypeCS,&offline,&devpower,&devstate);
+		get_DevStateByType(devTypeCS,&offline,&devpower,&devstate);
 		if (offline==offlineYes)
 		{
 			lcd_change_value(0x00f4,0);//不可操作
@@ -519,8 +513,7 @@ void lcd_operation(void)
 					lcd_change_value(0x00f4,2);//开
 			}
 		}
-		if (offline==offlineYes)
-			get_DevStateByType(devTypeJS,&offline,&devpower,&devstate);
+		get_DevStateByType(devTypeJS,&offline,&devpower,&devstate);
 		if (offline==offlineYes)
 		{
 			lcd_change_value(0x00f1,0);//不可操作

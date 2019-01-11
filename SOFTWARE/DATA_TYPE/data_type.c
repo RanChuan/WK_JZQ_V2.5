@@ -27,7 +27,7 @@ u8 load_sys_cfg(SysCfgDef *buff)
 	
 }
  
-u8 load_dev_cfg(DeviceDef **buff,u8 num)
+u8 load_dev_cfg(DeviceDef *buff,u8 num)
 {
 	if ((SPI_FLASH_TYPE==W25Q80)||(SPI_FLASH_TYPE==W25Q16)||(SPI_FLASH_TYPE==W25Q32)||(SPI_FLASH_TYPE==W25Q64)||(SPI_FLASH_TYPE==W25Q128))
 	{
@@ -42,7 +42,7 @@ u8 load_dev_cfg(DeviceDef **buff,u8 num)
 }
 
 
-u8 load_env_cfg(CtrllimitDef **buff,u8 num)
+u8 load_env_cfg(CtrllimitDef *buff,u8 num)
 {
 	if ((SPI_FLASH_TYPE==W25Q80)||(SPI_FLASH_TYPE==W25Q16)||(SPI_FLASH_TYPE==W25Q32)||(SPI_FLASH_TYPE==W25Q64)||(SPI_FLASH_TYPE==W25Q128))
 	{
@@ -63,9 +63,9 @@ u8 load_env_cfg(CtrllimitDef **buff,u8 num)
 
 
 SysCfgDef *SYS_CFG=0;//系统配置
-DeviceDef **DEV_CFG=0;//设备配置数组
-CtrllimitDef **ENV_CFG=0;//环境配置数组
-EnvirDef **ENV_VALUE=0;//采集器环境值
+DeviceDef *DEV_CFG=0;//设备配置数组
+CtrllimitDef *ENV_CFG=0;//环境配置数组
+EnvirDef *ENV_VALUE=0;//采集器环境值
 
 void sys_cfg_init(void)
 {
@@ -138,7 +138,7 @@ u8 save_sys_cfg(SysCfgDef *buff)
 }
 
 
-u8 save_dev_cfg(DeviceDef **buff,u8 num)
+u8 save_dev_cfg(DeviceDef *buff,u8 num)
 {
 	if ((SPI_FLASH_TYPE==W25Q80)||(SPI_FLASH_TYPE==W25Q16)||(SPI_FLASH_TYPE==W25Q32)||(SPI_FLASH_TYPE==W25Q64)||(SPI_FLASH_TYPE==W25Q128))
 	{
@@ -153,7 +153,7 @@ u8 save_dev_cfg(DeviceDef **buff,u8 num)
 }
 
 
-u8 save_env_cfg(CtrllimitDef **buff,u8 num)
+u8 save_env_cfg(CtrllimitDef *buff,u8 num)
 {
 	if ((SPI_FLASH_TYPE==W25Q80)||(SPI_FLASH_TYPE==W25Q16)||(SPI_FLASH_TYPE==W25Q32)||(SPI_FLASH_TYPE==W25Q64)||(SPI_FLASH_TYPE==W25Q128))
 	{
@@ -238,22 +238,40 @@ u8 get_DevNumberByType(u8 devtype)
 void get_DevStateByType(u8 devtype,u8 *offline,u8 *power,u8 *state)
 {
 	u8 collector_num=0;
-	//*offline=offlineYes;
+	*offline=offlineYes;
 	for (u8 i=0;i<get_syscfg()->numberOfDevices;i++)
 	{
 		if (get_devcfg(i)->devType==devtype)
 		{
-			if (*offline==offlineYes)
-			{
-				*offline=get_devcfg(i)->offline;
-			}
+			*offline=get_devcfg(i)->offline;
 			if (*offline==offlineNo)
 			{
 				*power=get_devcfg(i)->devPower;
 				*state=get_devcfg(i)->devState;
+				break;
 			}
 		}
 	}
+	if (*offline==offlineNo) return;
+	if ((devtype==devTypeCS)||(devtype==devTypeJS))
+	{
+		for (u8 i=0;i<get_syscfg()->numberOfDevices;i++)
+		{
+			if (get_devcfg(i)->devType==devTypeYT)
+			{
+				if (*offline==offlineYes)
+				{
+					*offline=get_devcfg(i)->offline;
+				}
+				if (*offline==offlineNo)
+				{
+					*power=get_devcfg(i)->devPower;
+					*state=get_devcfg(i)->devState;
+				}
+			}
+		}
+	}
+
 }
 
 
@@ -263,18 +281,36 @@ EnvirDef *get_envirbyid (u16 devid)
 {
 	for (u8 i=0;i<get_syscfg()->collectorNumber;i++)
 	{
-		if (ENV_VALUE[i]->collectorId==devid)
+		if (ENV_VALUE[i].collectorId==devid)
 		{
-			return ENV_VALUE[i];
+			return &ENV_VALUE[i];
 		}
-		if (ENV_VALUE[i]->collectorId==0)
+		if (ENV_VALUE[i].collectorId==0)
 		{
-			ENV_VALUE[i]->collectorId=devid;
-			return ENV_VALUE[i];
+			ENV_VALUE[i].collectorId=devid;
+			return &ENV_VALUE[i];
 		}
 	}
 	
 }
 
+				//根据类型返回在线设备的地址列表
+u8 get_OnLineDevIdListByType (u8 devtype,u16 *idbuff)
+{
+	u8 collector_num=0;
+	for (u8 i=0;i<get_syscfg()->numberOfDevices;i++)
+	{
+		if (get_devcfg(i)->devType==devtype)
+		{
+			if (get_devcfg(i)->offline==offlineNo)
+			{
+				idbuff[collector_num]=get_devcfg(i)->devId;
+				collector_num++;
+			}
+		}
+	}
+	return collector_num;
+	
+}
 
 
