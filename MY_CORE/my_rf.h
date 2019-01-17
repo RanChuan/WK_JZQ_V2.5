@@ -90,7 +90,8 @@ u16 yt_newstate(u8 nowpower,u8 key,u16 addr);
 u16 Updata_devicestate(u16 addr ,u8 power,u8 state);
 
 
-
+		//加载默认配置信息
+void load_test_cfg(void);
 
 
 #endif

@@ -19,7 +19,6 @@
 
 //#include "os_task.h"
 
-
 /***************----- 网络参数变量定义 -----***************/
 
 u8 Phy_Addr[6]={0};//硬件地址
@@ -774,10 +773,15 @@ void W5500_Initialization(void)
 #include "malloc.h"
 void Load_Net_Parameters(void)
 {
-	
+	u8 data[6]={0};
 
 
 	mymemcpy(Phy_Addr,MAC,6);
+	mymemcpy(data,MAC+6,6);
+	for (u8 i=0;i<6;i++)
+	{
+		Phy_Addr[i]+=data[i];
+	}
 	Phy_Addr[0]&=0xfe;//第一位为偶数
 
 }

@@ -310,7 +310,7 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x8002800</StartAddress>
-                <Size>0x11400</Size>
+                <Size>0x38000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -639,6 +639,11 @@
               <FilePath>..\MY_CORE\my_light.c</FilePath>
             </File>
             <File>
+              <FileName>my_cfg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MY_CORE\my_cfg.c</FilePath>
+            </File>
+            <File>
               <FileName>my_rf.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\MY_CORE\my_rf.c</FilePath>
@@ -647,11 +652,6 @@
               <FileName>my_w5500.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\MY_CORE\my_w5500.c</FilePath>
-            </File>
-            <File>
-              <FileName>my_cfg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MY_CORE\my_cfg.c</FilePath>
             </File>
             <File>
               <FileName>my_messeg.c</FileName>

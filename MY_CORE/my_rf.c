@@ -47,6 +47,7 @@ void my_rf_loop (void * t)
 	
 //	RF_SetChannel(10); //暂时不用设置信道2018.10.12 
 	Load_Config();
+	load_test_cfg(); 
 	//write_config(); //写入配置到文件
 	Updata_DeviceNum();
 	while (1)
@@ -123,6 +124,63 @@ void loushui_warn(u16 addr,u8 devtype)
 		send_messeg(WK_MESSEG,send);//发送给网口
 	
 }
+
+
+
+
+
+		//加载默认配置信息
+void load_test_cfg(void)
+{
+	
+	//如果没有配置，加载默认的
+	if (EN_CONFIG[0]==0)
+	{
+		EN_CONFIG[0]=1;
+		EN_CONFIG[1]=0;
+		EN_CONFIG[2]=2;
+		EN_CONFIG[3]=1;
+		EN_CONFIG[4]=3;
+		EN_CONFIG[5]=3;
+		EN_CONFIG[6]=33;
+		EN_CONFIG[7]=1;
+		EN_CONFIG[8]=34;
+		EN_CONFIG[9]=1;
+		EN_CONFIG[10]=35;
+		EN_CONFIG[11]=1;
+		EN_CONFIG[12]=36;
+		EN_CONFIG[13]=1;
+		
+		//本机地址
+		Get_MyIP()[0]=192;
+		Get_MyIP()[1]=168;
+		Get_MyIP()[2]=2;
+		Get_MyIP()[3]=13;
+		
+		//服务器地址
+		Get_MyIP()[6]=192;
+		Get_MyIP()[7]=168;
+		Get_MyIP()[8]=2;
+		Get_MyIP()[9]=56;
+
+		Get_MyIP()[10]=6000>>8;
+		Get_MyIP()[11]=6000&0x00ff;
+		
+		//网关IP
+		Get_MyIP()[12]=192;
+		Get_MyIP()[13]=168;
+		Get_MyIP()[14]=2;
+		Get_MyIP()[15]=1;
+
+		Save_Config();
+	}
+	
+
+}
+
+
+
+
 
 
 

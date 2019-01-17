@@ -108,7 +108,7 @@ u8 serch_server(void)
 	extern u16 SERVER_PORT;
 	extern u8 NET_S0_STATE;
 	u8 udpip[4]={255,255,255,255};
-	u8 i=10;
+	u8 i=2;
 	u8 ret=0;
 	while (--i)
 	{
@@ -118,15 +118,20 @@ u8 serch_server(void)
 		}
 		else
 		{
-			udp_send(0,udpip,6001,"{\"cmd\":\"search\"}",16);
-			delay_ms(1000);
+			udp_send(0,udpip,6001,"{\"cmd\":\"search\"}_#_",19);
+			u16 wait=10;
+			while(wait--)
+			{
+				delay_ms(100);
+				if (NET_S0_STATE&IR_RECV) break;
+			}
 			u8 *data=0;
 			if (NET_S0_STATE&IR_RECV)//如果收到了消息
 			{
 				NET_S0_STATE&=~IR_RECV;
 				data=mymalloc(2048);//申请2k内存
 				server_read_data( data);
-				if (json_cheek((char *)data))
+				if (json_cheek((char *)(data+8)))
 				{
 					cJSON *root = cJSON_Parse((const char *)(data+8));
 					if (strcmp(cJSON_GetObjectItem(root, "cmd")->valuestring,"serverconf")==0)

@@ -3,7 +3,7 @@
 #include "sys.h"
 
 #define SOCKET u8
-#define MAC ((u8*)0x1FFFF7E8+2)
+#define MAC ((u8*)0x1FFFF7E8)
 
 /***************** Common Register *****************/
 #define MR		0x0000

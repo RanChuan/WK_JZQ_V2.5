@@ -51,7 +51,7 @@ void TIME3_Init(void)
 	//中断优先级NVIC设置
 	NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;  //TIM3中断
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;  //先占优先级0级
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;  //从优先级3级
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;  //从优先级3级
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //IRQ通道被使能
 	NVIC_Init(&NVIC_InitStructure);  //初始化NVIC寄存器
 
@@ -1325,76 +1325,10 @@ void Beep_Run(void)
 }
 
 
-#define LED111 PBout(0)
-#define LED222 PBout(1)
 
 
 
-
-#define LED_TEST1 PAout(15)
-#define LED_TEST2 PBout(3)
-#define LED_TEST3 PDout(2)
-#define LED_TEST4 PCout(10)
-
-
-
-
-void fff(void)
-{
-	static u32 a=0;
-	static u32 b=0;
-	static u32 c=0;
-	static u32 d=0;
-	a++;
-	if (a==100)//频率控制
-	{
-		a=0;
-//		LED111=1;
-		LED222=1;
-		LED_TEST1=1;
-		LED_TEST2=1;
-		LED_TEST3=1;
-		LED_TEST4=1;
-	}
-	else if (a==50)
-	{
-		LED111=0;
-		LED222=0;
-		LED_TEST1=0;
-		LED_TEST2=0;
-		LED_TEST3=0;
-		LED_TEST4=0;
-	}
-	
-	d++;
-	static u8 t=0;
-	if (d>=1000)//脉宽调节
-	{
-		d=0;
-		if (t==0)
-		{
-			b++;
-			if (b>=40)
-			{
-				t=1;
-			}
-		}
-		if (t==1)
-		{
-			if (b>0)
-				b--;
-			else
-			{
-				
-				t=0;
-			}
-		}
-	}
-}
-
-
-
-
+extern void LIGHT_RUN_IRQ(void);
 
 
 void TIM3_IRQHandler(void)   //TIM4中断
@@ -1403,7 +1337,7 @@ void TIM3_IRQHandler(void)   //TIM4中断
 	{
 		TIM_ClearITPendingBit(TIM3, TIM_IT_Update  );  //清除TIMx更新中断标志 
 		//if (sond) Beep_Run( );   //ojjm中断
-		fff();
+		LIGHT_RUN_IRQ();
 //		LED111=1;
 //		LED222=1;
 

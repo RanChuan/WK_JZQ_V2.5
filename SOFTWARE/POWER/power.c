@@ -39,6 +39,7 @@ void SysPowerOff (void)
 void Sys_Init(void)
 {
 	*SHCSR|=7<<16;
+//	NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x5000);
 	NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x2800);
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);// 设置中断优先级分组2
 	BEEP_Init(); 

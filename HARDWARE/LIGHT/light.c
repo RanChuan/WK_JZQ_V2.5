@@ -8,7 +8,7 @@
 #define LIGHT_2 PBout(5)
 #define LIGHT_3 PBout(6)
 #define LIGHT_4 PBout(7)
-#define LIGHT_1 PBout(0)
+#define LIGHT_1 PBout(5)
 
 //-------------------------------
 
@@ -627,6 +627,79 @@ void Run_Light (void)
 		}
 	
 }
+
+
+
+
+#define LED111 PBout(0)
+#define LED222 PBout(1)
+
+
+
+
+#define LED_TEST1 PAout(15)
+#define LED_TEST2 PBout(3)
+#define LED_TEST3 PDout(2)
+#define LED_TEST4 PCout(10)
+
+
+
+
+void LIGHT_RUN_IRQ(void)
+{
+	static u32 a=0;
+	static u32 b=0;
+	static u32 c=0;
+	static u32 d=0;
+	a++;
+	if (a==100)//频率控制
+	{
+		a=0;
+//		LED111=1;
+		LED222=1;
+		LED_TEST1=1;
+		LED_TEST2=1;
+		LED_TEST3=1;
+		LED_TEST4=1;
+	}
+	else if (a==20)
+	{
+		LED111=0;
+		LED222=0;
+		LED_TEST1=0;
+		LED_TEST2=0;
+		LED_TEST3=0;
+		LED_TEST4=0;
+	}
+	
+	d++;
+	static u8 t=0;
+	if (d>=1000)//脉宽调节
+	{
+		d=0;
+		if (t==0)
+		{
+			b++;
+			if (b>=40)
+			{
+				t=1;
+			}
+		}
+		if (t==1)
+		{
+			if (b>0)
+				b--;
+			else
+			{
+				
+				t=0;
+			}
+		}
+	}
+}
+
+
+
 
 
 
