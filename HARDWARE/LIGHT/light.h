@@ -59,6 +59,9 @@ void key_senddata (void);
 			//刷新刷新指定缓存区颜色
 void key_senddataby (u8 **colors);
 
+//设置灯光带的颜色2019.1.18
+void light_setcolor(u8 red,u8 green,u8 blue);
+
 
 #endif
 

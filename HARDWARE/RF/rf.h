@@ -71,7 +71,9 @@ void Set_MyIP (u8 *data);
 u16 * Get_MyIP (void);
 
 
+u8 Set_MyChanel (u8 chanel);
 
+u8 Get_MyChanel (void);
 
 
 //------------------------供外部调用的函数End---------------------------

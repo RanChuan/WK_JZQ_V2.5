@@ -6,6 +6,8 @@
 
 
 void TIME4_Init(void);
+					//定时器3输出调光的PWM
+void TIME3_Init(void);
 
 
 void RunTime_IRQHandler(void);

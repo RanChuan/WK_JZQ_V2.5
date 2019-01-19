@@ -45,23 +45,33 @@ void my_rf_loop (void * t)
 	RF_SetFocus(OSPrioHighRdy);
 	
 	
-//	RF_SetChannel(10); //暂时不用设置信道2018.10.12 
 	Load_Config();
 	load_test_cfg(); 
+	RF_SetChannel(Get_MyChanel()); 
 	//write_config(); //写入配置到文件
 	Updata_DeviceNum();
 	while (1)
 	{
-		delay_ms(1000); 
 		for (i=1;EN_CONFIG[i*2+1];i++)
 		{
+			delay_ms(1000);//采集器延时1s，防止下一个冲突
 			ret=Cmd_0x01 (EN_CONFIG[i*2] ,rf_recv);
 			if (ret==0)//成功
 			{
-				if (rf_recv[9]==1)//类型是采集器
+				if ((EN_CONFIG[i*2+1]&0x00ff)==1)
+//				if (rf_recv[9]==1)//类型是采集器
 				{
 					EN_CONFIG[i*2+1]|=DEVICEON;
-					copy_data(rf_recv,EN_DATA,rf_recv[6]+7);
+					
+					//模拟收到了消息
+					rf_recv[0]=0xff;
+					rf_recv[1]=0xff;
+					rf_recv[2]=EN_CONFIG[i*2]>>8;
+					rf_recv[3]=EN_CONFIG[i*2];
+					
+					rf_cjq_deal(rf_recv);
+					if (EN_DATA[1]!=0xff)
+						copy_data(rf_recv,EN_DATA,rf_recv[6]+7);
 				}
 				else 
 				{
@@ -106,6 +116,11 @@ void my_rf_loop (void * t)
 					EN_CONFIG[i*2+1]|=DEVICEOFFLINE;//离线了
 				}
 			}
+			else
+			{
+					EN_CONFIG[i*2+1]&=0x00ff;//离线了
+					EN_CONFIG[i*2+1]|=DEVICEOFFLINE;//离线了
+			}
 		}
 	}
 }
@@ -125,6 +140,36 @@ void loushui_warn(u16 addr,u8 devtype)
 	
 }
 
+
+			//发送采集器数据
+void rf_cjq_deal(u8 *data) 
+{
+	u16 temp=0;
+	u8 send[MESSEG_DATA]={0};
+	
+	
+		temp=data[17]*10+data[18];//原数据*10,温度
+		send[0]=4;send[3]=temp>>8;send[4]=temp;
+#if __USE_OLD == 0
+		temp=data[19]*10+data[20];//原数据，湿度
+#else
+		temp=data[19];//原数据，湿度
+#endif
+		send[5]=temp>>8;send[6]=temp;
+		temp=data[21]*10+data[22];
+		send[7]=temp>>8;send[8]=temp;
+		send_messeg(LCD_MESSEG,send);//发送给屏幕显示
+		
+		send[0]=2;send[1]=1;send[2]=0;//发送采集器的数据
+		send[3]=((u32 )data>>24);	//设置地址
+		send[4]=((u32 )data>>16);
+		send[5]=((u32 )data>>8);
+		send[6]=((u32 )data);
+		if (find_messeg(WK_MESSEG)==0)
+			send_messeg(WK_MESSEG,send);//发送给网口
+		data[0]=0;
+
+}
 
 
 
@@ -204,9 +249,9 @@ void my_rf_hand (void * t)
 		delay_ms(200);
 		if (get_messeg(RF_MESSEG,msg))//没有消息
 		{
-			TaskSendMsg(3,8);
+//			TaskSendMsg(3,8);
 			RF_SetFocus(3);
-			TaskRepend(3);
+//			TaskRepend(3);
 		}
 		else
 		{
@@ -332,8 +377,8 @@ void my_rf_hand (void * t)
 					}
 				}
 			}
+			TaskRepend(3);
 		}
-//		delay_ms(200);
 	}
 }
 
@@ -684,31 +729,8 @@ void my_rf_deal (void * t)
 		{
 			if ((EN_CONFIG[i*2+1]&0x00ff)==1)//是采集器
 			{
-							//采集器的数据
-				if (EN_DATA[0])
-				{
-					temp=EN_DATA[17]*10+EN_DATA[18];//原数据*10,温度
-					send[0]=4;send[3]=temp>>8;send[4]=temp;
-#if __USE_OLD == 0
-					temp=EN_DATA[19]*10+EN_DATA[20];//原数据，湿度
-#else
-					temp=EN_DATA[19];//原数据，湿度
-#endif
-					send[5]=temp>>8;send[6]=temp;
-					temp=EN_DATA[21]*10+EN_DATA[22];
-					send[7]=temp>>8;send[8]=temp;
-					send_messeg(LCD_MESSEG,send);//发送给屏幕显示
-					
-					send[0]=2;send[1]=1;send[2]=0;//发送采集器的数据
-					send[3]=((u32 )EN_DATA>>24);	//设置地址
-					send[4]=((u32 )EN_DATA>>16);
-					send[5]=((u32 )EN_DATA>>8);
-					send[6]=((u32 )EN_DATA);
-					if (find_messeg(WK_MESSEG)==0)
-						send_messeg(WK_MESSEG,send);//发送给网口
-					EN_DATA[0]=0;
-				}
-				else  //发送离线时的消息
+				//发送采集器离线消息，在线时的消息在消息循环里发送
+				if ((EN_CONFIG[i*2+1]&DEVICEOFFLINE))
 				{
 					send[0]=2;send[1]=1;send[2]=1;//发送采集器的数据
 					send[3]=((u32 )EN_DATA>>24);	//设置地址

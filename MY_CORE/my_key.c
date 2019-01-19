@@ -42,6 +42,11 @@ void my_key (void *t)
 	
 	u8 recv[MESSEG_DATA]={0};
 	Key_Init();
+	for (i=0;i<6;i++)
+	{
+		key[i]=Get_Key (i+1);
+		key[i]=PRESS_NONE;
+	}
 	while(1)
 	{
 		TaskGetMsg();
@@ -61,16 +66,35 @@ void my_key (void *t)
 				light[0]=5;//ÆÁÄ»·äÃùÆ÷½Ð
 				light[1]=1;
 				send_messeg(LCD_MESSEG,light);
+				
+				light[0]=LIGHT_ROUND_LIGHT;
+				light[2]=LIGHT_LIGHT_STOP;
+				light[1]=LIGHT_LIGHT_RUNTO;
+				send_messeg(LIT_MESSEG,light);
 			}
 			else if (key[i]==PRESS_LONG)
 			{
 				light[0]=5;//ÆÁÄ»·äÃùÆ÷½Ð
 				light[1]=2;
 				send_messeg(LCD_MESSEG,light);
+				
+				light[0]=LIGHT_ROUND_LIGHT;
+				light[2]=LIGHT_LIGHT_STOP;
+				light[1]=LIGHT_LIGHT_RUNTO;
+				send_messeg(LIT_MESSEG,light);
 			}
 			else if (key[i]==PRESS_DOWN)
 			{
-				
+				light[0]=LIGHT_ROUND_LIGHT;
+				light[2]=LIGHT_LIGHT_STCOR;
+				light[1]=LIGHT_LIGHT_RUNTO;
+				light[3]=255;
+				light[4]=255;
+				light[5]=255;
+				send_messeg(LIT_MESSEG,light);
+			}
+			else
+			{
 			}
 		}
 		

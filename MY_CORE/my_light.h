@@ -25,6 +25,8 @@ void led_run (u8 *meg);
 void light_run (u8 *msg);
 
 
+//周围灯光渐变至指定颜色
+void light_runto (u8 *msg);
 
 
 			//灯带亮纯色

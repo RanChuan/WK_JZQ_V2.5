@@ -400,7 +400,8 @@ void json_return (u8 deviceid,const char * cmdNum,const char *errType)
 	cJSON_AddStringToObject(root,"devtype","jzq");
 	cJSON_AddStringToObject(root,"cmd","cmdresult");
 	cJSON_AddStringToObject(root,"cmdNum",cmdNum);
-	cJSON_AddStringToObject(root,"errorType",errType);
+	cJSON_AddItemToObject(root,"data", js_collect = cJSON_CreateObject());
+	cJSON_AddStringToObject(js_collect,"errorType",errType);
 	
 
 							//È¡µÃjson×Ö·û´®

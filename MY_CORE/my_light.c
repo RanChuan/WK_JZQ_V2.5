@@ -6,7 +6,7 @@
 
 		meg的位定义
 		meg[0],1,键盘上的灯，2，设备状态指示灯3，灯带，4，键盘上的灯闪烁
-		meg[1],亮或灭,灯带闪烁的类型，1，正向流水，2，反向流水，3，正向双流水，4，反向双流水，5，纯色
+		meg[1],亮或灭,灯带闪烁的类型，1，正向流水，2，反向流水，3，正向双流水，4，反向双流水，5，纯色，6，渐变至纯色
 						键盘灯闪烁的时候闪烁的位置
 		meg2，亮或灭第几个,灯带闪烁1,开始，0，停止，2，自动换色
 						键盘灯闪烁的时候闪烁次数，
@@ -27,38 +27,55 @@
 void my_light (void * t)//这个任务出现了独占CPU的情况2018.12.20
 {
 	u8 messeg[MESSEG_DATA]={0};
-	u8 mode;//纯色还是流水
+	u8 mode=0;//纯色还是流水
 	Light_init();
 	while (1)
 	{
 		delay_ms(40);
 		if (get_messeg (LIT_MESSEG,messeg))
 		{
-			if (mode!=5)
+			if (mode<=4)//流水灯模式
 			{                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 				led_run (messeg);
-			}		
+			}
+			else if (mode==6)//渐变至纯色
+			{
+				light_runto(messeg);  
+			}
 		}
 		else 
 		{
-			if (messeg[0]==2)
+			if (messeg[0]==LIGHT_WARN_STATE)
 			{
 				key_light (messeg[2],messeg[1]);
 			}
-			else if (messeg[0]==1)
+			else if (messeg[0]==LIGHT_DEVICE_STATE)
 			{
 				key_around (messeg[2],messeg[1]);
 			}
-			else if (messeg[0]==3)
+			else if (messeg[0]==LIGHT_ROUND_LIGHT)
 			{
 				mode=messeg[1];
-				led_run (messeg);
-				led_lightall (messeg);
+				if (mode<=4)
+				{
+					led_run (messeg);
+				}
+				else if (mode==LIGHT_LIGHT_COLOR)
+				{
+					led_lightall (messeg);
+				}
+				else if (mode==6)
+				{
+					light_runto(messeg);  
+				}
 			}
 		}
 	}
 }
 
+
+//灯带的实时颜色
+static u8 red,green,blue;
 
 
 
@@ -106,11 +123,79 @@ void light_run (u8 *msg)
 }
 
 
+		//渐变步长
+#define RUNTO_SKIP 5
 
-
-
-
-
+//周围灯光渐变至指定颜色
+void light_runto (u8 *msg)
+{
+	static u8 red_=0,green_=0,blue_=0;
+	static u8 red_old=0,green_old=0,blue_old=0;
+	static u8 mode=0;//闪烁模式
+	static u8 first=0;
+	if (msg[0]==LIGHT_ROUND_LIGHT)
+	{
+		if (msg[1]==6)
+		{
+			mode=msg[1];
+			if (msg[2]==LIGHT_LIGHT_STCOR)
+			{
+				red_=msg[3];
+				green_=msg[4];
+				blue_=msg[5];
+				if (first==0)
+				{red_old=red;green_old=green;blue_old=blue;first=1;}
+			}
+			else
+			{
+				if (first==1)
+				{
+					red_=red_old;
+					green_=green_old;
+					blue_=blue_old;
+					red=red_old;green=green_old;blue=blue_old;
+					first=0;
+				}
+			}
+		}
+		else
+		{
+			mode=0;
+		}
+	}
+	
+	if (mode==LIGHT_LIGHT_RUNTO)
+	{
+		if (red_>red+RUNTO_SKIP){
+			red+=RUNTO_SKIP;
+		}else if (red_+RUNTO_SKIP<red){
+			red-=RUNTO_SKIP;
+		}else{
+			red=red_;
+		}
+		if (green_>green+RUNTO_SKIP){
+			green+=RUNTO_SKIP;
+		}else if (green_+RUNTO_SKIP<green){
+			green-=RUNTO_SKIP;
+		}else{
+			green=green_;
+		}
+		if (blue_>blue+RUNTO_SKIP){
+			blue+=RUNTO_SKIP;
+		}else if (blue_+RUNTO_SKIP<blue){
+			blue-=RUNTO_SKIP;
+		}else{
+			blue=blue_;
+		}
+		led_setall (red,green,blue);
+		led_senddata();
+		light_setcolor(red,green,blue);//设置新版灯光带的颜色2019.1.18
+		if ((red_==red)&&(green_==green)&&(blue_==blue))
+		{
+			mode=0;
+		}
+	}
+}
 
 
 
@@ -188,7 +273,6 @@ void led_light (u16 num,u8 state,u8 red,u8 green,u8 blue)
 			//灯带亮纯色
 void led_lightall (u8 *meg)
 {
-	static u8 red,green,blue;
 	static u8 mode;
 	if (meg[0]==3)
 	{
@@ -197,6 +281,7 @@ void led_lightall (u8 *meg)
 			red=meg[3];green=meg[4];blue=meg[5];mode=meg[1];
 			led_setall (red,green,blue);
 			led_senddata();
+			light_setcolor(red,green,blue);//设置新版灯光带的颜色2019.1.18
 		}
 	}
 	else if (mode==5)
@@ -212,7 +297,7 @@ void led_run (u8 *meg)
 {
 	static u8 led_state=0;//关灯带
 	static u16 run_num=0;
-	static u8 tt[4]={0};
+	static u8 tt[1]={0};
 	static u8 color_state[3]={0};//自动换色标志
 	if (meg[0]==3)
 	{
@@ -221,24 +306,27 @@ void led_run (u8 *meg)
 		if (led_state>=1)//开始
 		{
 			tt[0]=meg[1];
-			tt[1]=meg[3];//颜色
-			tt[2]=meg[4];
-			tt[3]=meg[5];
+			red=meg[3];//颜色
+			green=meg[4];
+			blue=meg[5];
 		}
 		else if (led_state==0)//停止
 		{
 			led_resetall ( );
 			tt[0]=0;
-			tt[1]=0;
-			tt[2]=0;
-			tt[3]=0;
+			red=0;
+			green=0;
+			blue=0;
 			led_senddata();
+			light_setcolor(0,0,0);
 		}
 	}
+	
 	if (led_state>=1)
 	{
 		led_resetall ( );
-		led_light (run_num,tt[0],tt[1],tt[2],tt[3]);
+		led_light (run_num,tt[0],red,green,blue);
+		light_setcolor(red,green,blue);//新版灯光带2019.1.18
 		if (tt[0]&0x01) 
 		{
 			run_num++;
@@ -256,9 +344,9 @@ void led_run (u8 *meg)
 		
 			if (color_state[0]==0)
 			{
-				if (tt[1]<255)
+				if (red<255)
 				{
-					tt[1]++;
+					red++;
 				}
 				else
 				{
@@ -267,9 +355,9 @@ void led_run (u8 *meg)
 			}
 			else
 			{
-				if (tt[1]>0)
+				if (red>0)
 				{
-					tt[1]-=1;
+					red-=1;
 				}
 				else
 				{
@@ -279,9 +367,9 @@ void led_run (u8 *meg)
 			//--------------------------
 			if (color_state[1]==0)
 			{
-				if (tt[2]<251)
+				if (green<251)
 				{
-					tt[2]+=2;
+					green+=2;
 				}
 				else
 				{
@@ -290,9 +378,9 @@ void led_run (u8 *meg)
 			}
 			else
 			{
-				if (tt[2]>3)
+				if (green>3)
 				{
-					tt[2]-=2;
+					green-=2;
 				}
 				else
 				{
@@ -302,9 +390,9 @@ void led_run (u8 *meg)
 			//--------------------------
 			if (color_state[2]==0)
 			{
-				if (tt[3]<250)
+				if (blue<250)
 				{
-					tt[3]+=3;
+					blue+=3;
 				}
 				else
 				{
@@ -313,9 +401,9 @@ void led_run (u8 *meg)
 			}
 			else
 			{
-				if (tt[3]>4)
+				if (blue>4)
 				{
-					tt[3]-=3;
+					blue-=3;
 				}
 				else
 				{

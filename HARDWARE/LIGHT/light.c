@@ -8,7 +8,7 @@
 #define LIGHT_2 PBout(5)
 #define LIGHT_3 PBout(6)
 #define LIGHT_4 PBout(7)
-#define LIGHT_1 PBout(5)
+#define LIGHT_1 PBout(3)
 
 //-------------------------------
 
@@ -31,6 +31,10 @@ static u8 KEY_COLOR[3][6]={{0},{0},{20,20,20,20,20,20}};//新版集中器按键灯颜色20
 
 static u8 LED_COLOR[3][LED_NUM]={0};
 
+
+void (*LIGHT_RUN_PTR)(void);//灯光亮度中断2019.1.18
+
+
 void Light_init (void)
 {
 
@@ -41,7 +45,7 @@ void Light_init (void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);  
   
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1;  
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;  
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;  
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;  
 	
 		//临时使用这两个脚调光2018.11.23
@@ -89,7 +93,7 @@ void Light_init (void)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;  
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;  
 	
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	//GPIO_Init(GPIOB, &GPIO_InitStructure);
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);  
   
@@ -642,7 +646,9 @@ void Run_Light (void)
 #define LED_TEST3 PDout(2)
 #define LED_TEST4 PCout(10)
 
-
+u8 RED_LIGHT=0;
+u8 GREEN_LIGHT=0;
+u8 BLUE_LIGHT=0;
 
 
 void LIGHT_RUN_IRQ(void)
@@ -652,26 +658,32 @@ void LIGHT_RUN_IRQ(void)
 	static u32 c=0;
 	static u32 d=0;
 	a++;
-	if (a==100)//频率控制
+	if (a>=255)//频率控制
 	{
 		a=0;
-//		LED111=1;
+		LED111=1;
 		LED222=1;
 		LED_TEST1=1;
 		LED_TEST2=1;
 		LED_TEST3=1;
 		LED_TEST4=1;
 	}
-	else if (a==20)
+	if (a==RED_LIGHT)
 	{
 		LED111=0;
+	}
+	if (a==GREEN_LIGHT)
+	{
 		LED222=0;
+	}
+	if (a==BLUE_LIGHT)
+	{
 		LED_TEST1=0;
 		LED_TEST2=0;
 		LED_TEST3=0;
 		LED_TEST4=0;
 	}
-	
+/*	
 	d++;
 	static u8 t=0;
 	if (d>=1000)//脉宽调节
@@ -696,10 +708,20 @@ void LIGHT_RUN_IRQ(void)
 			}
 		}
 	}
+*/
 }
 
 
-
+//设置灯光带的颜色
+void light_setcolor(u8 red,u8 green,u8 blue)
+{
+	RED_LIGHT=red;
+	GREEN_LIGHT=green;
+	BLUE_LIGHT=blue;
+	
+	TIM3->CCR4=red;
+	TIM3->CCR3=green;
+}
 
 
 

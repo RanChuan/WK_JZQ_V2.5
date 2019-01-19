@@ -212,7 +212,7 @@ void my_w5500interrupt (void * t)
 
 
 
-
+//应上位机软件要求，把数值改为字符串型。2019.1.18
 					//上位机设置环境上下限
 void json_setting (cJSON *root)
 {
@@ -222,12 +222,26 @@ void json_setting (cJSON *root)
 	u16 wddown;
 	u16 sddown;
 	cJSON *js_controldata = cJSON_GetObjectItem(root, "data");
-	wdup= cJSON_GetObjectItem(js_controldata, "wdup")->valueint;
-	sdup= cJSON_GetObjectItem(js_controldata, "sdup")->valueint;
-	tvocup= cJSON_GetObjectItem(js_controldata, "tvocup")->valueint;
-	wddown= cJSON_GetObjectItem(js_controldata, "wddown")->valueint;
-	sddown= cJSON_GetObjectItem(js_controldata, "sddown")->valueint;
+	if (js_controldata==0)
+	{
+		json_return (Get_MyAddr(),cJSON_GetObjectItem(root, "cmdNum")->valuestring,"NoDataItem");
+		return;
+	}
+//	wdup= cJSON_GetObjectItem(js_controldata, "wdup")->valueint;
+//	sdup= cJSON_GetObjectItem(js_controldata, "sdup")->valueint;
+//	tvocup= cJSON_GetObjectItem(js_controldata, "tvocup")->valueint;
+//	wddown= cJSON_GetObjectItem(js_controldata, "wddown")->valueint;
+//	sddown= cJSON_GetObjectItem(js_controldata, "sddown")->valueint;
 
+	
+	wdup=str2num((u8 *)cJSON_GetObjectItem(js_controldata, "wdup")->valuestring);
+	sdup=str2num((u8 *)cJSON_GetObjectItem(js_controldata, "sdup")->valuestring);
+	tvocup=str2num((u8 *)cJSON_GetObjectItem(js_controldata, "tvocup")->valuestring);
+	wddown=str2num((u8 *)cJSON_GetObjectItem(js_controldata, "wddown")->valuestring);
+	sddown=str2num((u8 *)cJSON_GetObjectItem(js_controldata, "sddown")->valuestring);
+	
+	
+	
 	Lcd_SetLimitData(0,wdup);
 	Lcd_SetLimitData(1,wddown);
 	Lcd_SetLimitData(2,sdup);
@@ -397,12 +411,18 @@ void json_close (cJSON *root)
 
 void json_mode (cJSON *root)
 {
-	if (strcmp("hand",cJSON_GetObjectItem(root, "mode")->valuestring)==0)
+	cJSON *js_controldata = cJSON_GetObjectItem(root, "data");
+	if (js_controldata==0) 
+	{
+		json_return (Get_MyAddr(),cJSON_GetObjectItem(root, "cmdNum")->valuestring,"NoDataItem");
+		return ;
+	}
+	if (strcmp("hand",cJSON_GetObjectItem(js_controldata, "mode")->valuestring)==0)
 	{
 		Lcd_SetHandstate(1);
 		json_return (Get_MyAddr(),cJSON_GetObjectItem(root, "cmdNum")->valuestring,"0");
 	}
-	else if (strcmp("auto",cJSON_GetObjectItem(root, "mode")->valuestring)==0)
+	else if (strcmp("auto",cJSON_GetObjectItem(js_controldata, "mode")->valuestring)==0)
 	{
 		Lcd_SetHandstate(0);
 		json_return (Get_MyAddr(),cJSON_GetObjectItem(root, "cmdNum")->valuestring,"0");
@@ -608,7 +628,7 @@ u8 send_json_cj (u8 *msg)
 	  cJSON_AddStringToObject(root,"devType","cjq");//设备类型采集器
 	  cJSON_AddStringToObject(root,"cmd","swap");//数据交换
 
-		if (Lcd_GetHandstate())
+		if (Lcd_GetHandstate()==0)
 		{
 			cJSON_AddStringToObject(root,"mode","auto");
 		}
@@ -685,6 +705,14 @@ u8 send_json_kz (u8 *msg)
 		}
 		else	//在线
 		{
+			if (Lcd_GetHandstate()==0)
+			{
+				cJSON_AddStringToObject(root,"mode","auto");
+			}
+			else
+			{
+				cJSON_AddStringToObject(root,"mode","hand");
+			}
 			if (msg[5])//开
 			{
 				if (msg[6]==1)//升温

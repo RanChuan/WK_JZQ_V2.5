@@ -145,6 +145,7 @@
 #define LIGHT_LIGHT_DR					3//环绕灯光，正向双流水
 #define LIGHT_LIGHT_DL					4//环绕灯光，反向双流水
 #define LIGHT_LIGHT_COLOR				5//环绕灯光，纯色
+#define LIGHT_LIGHT_RUNTO				6//渐变为指定颜色
 #define LIGHT_LIGHT_UPDATE			1//更新为自身缓存的颜色
 #define LIGHT_LIGHT_UPDATEBY		2//更新为指定缓存地址的颜色
 #define LIGHT_LIGHT_GETTO				3//获取自身缓存地址的颜色到指定缓存地址

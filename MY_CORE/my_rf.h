@@ -75,6 +75,9 @@ void my_rf_hand (void * t);
 
 void loushui_warn(u16 addr,u8 devtype);
 
+void rf_cjq_deal(u8 *data);
+
+
 u16 CheckId (u16 addr);//判断是否含有此设备id
 
 

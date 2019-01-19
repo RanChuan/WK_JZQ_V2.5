@@ -97,7 +97,7 @@ void dbg_copydata (u8 *);
 				//使用DNS获取域名的IP地址
 void dbg_getip(u8 *buff);
 
-
+void dbg_setchanel (u8 *);
 				//测试mqtt连接
 void dbg_mqtt(u8 *buff);
 

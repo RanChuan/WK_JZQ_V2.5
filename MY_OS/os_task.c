@@ -131,6 +131,8 @@ INT8U TaskRepend (INT32U prio)
 	OS_ENTER_CRITICAL(); 
 	if (TCB_Table[prio].Pend)
 		TCB_Table[prio].Pend--;
+	if (TCB_Table[prio].Pend==0)
+		TASK_Free|=0x80000000>>prio;//任务切换为就绪状态
 	OS_EXIT_CRITICAL();
 	return 1;
 }
@@ -149,11 +151,19 @@ void TaskIntSendMsg(u8 pro,INT32U msg)
 		TCB_Table[pro].MYWork|=msg;
 		TASK_Free|=0x80000000>>pro;//任务切换为就绪状态
 	}
-	if (TCB_Table[pro].Pend)	//任务处于挂起状态
-		return ;
 	
+	
+	//发送消息之后进行任务调度
 	if (OS_ONLYME) return;//此时不可进行调度
 	tt=GetZeroNum(TASK_Free);
+	if (TCB_Table[tt].pTask==0) return ;
+	if (TCB_Table[tt].Pend)	//任务处于挂起状态
+		return ;
+	if ((TCB_Table[tt].pTask==0)||(TCB_Table[tt].Pend)) 
+	{
+		TASK_Free&=~(0x80000000>>tt);//清除任务就绪标志
+		return ;
+	}
 	if (tt<OSPrioHighRdy)//如果当前任务优先级最高，强行跳转
 	{
 		if (tt<TASK_MAX_NUM)
@@ -184,12 +194,17 @@ u8 TaskSendMsg(u8 pro,INT32U msg)
 		TASK_Free|=0x80000000>>pro;//任务切换为就绪状态
 	}
 	OS_EXIT_CRITICAL();
-	if (TCB_Table[pro].pTask==0) return 0;
  
 	
-	if (TCB_Table[pro].Pend)	//任务处于挂起状态
-		return 0;
+	//发送消息之后进行任务调度
 	tt=GetZeroNum(TASK_Free);
+	if ((TCB_Table[tt].pTask==0)||(TCB_Table[tt].Pend)) 
+	{
+		OS_ENTER_CRITICAL();
+		TASK_Free&=~(0x80000000>>tt);//清除任务就绪标志
+		OS_EXIT_CRITICAL();
+		return 0;
+	}
 	if (tt<OSPrioHighRdy)//如果有更高的优先级，强行跳转
 	{
 		if (tt<TASK_MAX_NUM)
@@ -235,6 +250,12 @@ INT32U TaskGetMsg(void)
 	
 					//高优先级任务主动释放CPU在这里进行任务跳转
 	tt=GetZeroNum(TASK_Free);
+	if ((TCB_Table[tt].pTask==0)||(TCB_Table[tt].Pend)) 
+	{
+		OS_ENTER_CRITICAL();
+		TASK_Free&=~(0x80000000>>tt);//清除任务就绪标志
+		OS_EXIT_CRITICAL();
+	}
 	if ((tt>OSPrioHighRdy)&&(tt<TASK_MAX_NUM))//如果有其他比自己优先级低的已就绪任务，跳转
 	{
 		OSPrioHighRdy=tt;
@@ -275,7 +296,16 @@ void OS_Exit_Onlyme(void)
 	if (!OS_ONLYME)
 		ONLYME_PRO=TASK_MAX_NUM;
 	OS_EXIT_CRITICAL();
-		tt=GetZeroNum(TASK_Free);
+	
+	
+	tt=GetZeroNum(TASK_Free);
+	if ((TCB_Table[tt].pTask==0)||(TCB_Table[tt].Pend)) 
+	{
+		OS_ENTER_CRITICAL();
+		TASK_Free&=~(0x80000000>>tt);//清除任务就绪标志
+		OS_EXIT_CRITICAL();
+		return ;
+	}
 	if (tt<OSPrioHighRdy)//如果有高优先级的已就绪任务，跳转
 	{
 		OSPrioHighRdy=tt;

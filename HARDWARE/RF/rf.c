@@ -387,6 +387,7 @@ u8 RF_SetChannel(u8 channel)
 		u8 recv[6]={0};
 		RF_Get(recv,6);
 		if (samestr("OK",recv)) break;
+		if (recv[4]==setdata[4]) break;
 	}
 	RF_M0=0;
 	RF_M1=0;
@@ -472,6 +473,8 @@ void Set_MyAddr(u16 addr)
 
 
 
+
+
 //------------------------供外部调用的函数---------------------------
 
 
@@ -513,9 +516,24 @@ u16 * Get_MyIP (void)
 }
 
 
+//设置信道，0成功，1失败
+u8 Set_MyChanel (u8 chanel)
+{
+	if ((chanel>=0)&&(chanel<=31))
+	{
+		EN_CONFIG[CONFIG_DATA_NUM-20-1]=chanel;
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
 
-
-
+u8 Get_MyChanel (void)
+{
+	return (EN_CONFIG[CONFIG_DATA_NUM-20-1]&0x00ff);
+}
 
 
  
