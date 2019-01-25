@@ -69,6 +69,7 @@
 ..\obj\dhcp.o: ..\MY_CORE\my_lcd_new.h
 ..\obj\dhcp.o: ..\MY_CORE\my_rf.h
 ..\obj\dhcp.o: ..\HARDWARE\RF\rf.h
+..\obj\dhcp.o: ..\MY_CORE\my_idle.h
 ..\obj\dhcp.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\dhcp.o: ..\MQTT\mqttsrc\MQTTConnect.h
 ..\obj\dhcp.o: ..\MQTT\mqttsrc\MQTTPublish.h

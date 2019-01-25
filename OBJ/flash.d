@@ -68,6 +68,7 @@
 ..\obj\flash.o: ..\MY_CORE\my_lcd_new.h
 ..\obj\flash.o: ..\MY_CORE\my_rf.h
 ..\obj\flash.o: ..\HARDWARE\RF\rf.h
+..\obj\flash.o: ..\MY_CORE\my_idle.h
 ..\obj\flash.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\flash.o: ..\MQTT\mqttsrc\MQTTConnect.h
 ..\obj\flash.o: ..\MQTT\mqttsrc\MQTTPublish.h

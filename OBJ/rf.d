@@ -68,6 +68,7 @@
 ..\obj\rf.o: ..\HARDWARE\LCD\lcd.h
 ..\obj\rf.o: ..\MY_CORE\my_iot.h
 ..\obj\rf.o: ..\MY_CORE\my_lcd_new.h
+..\obj\rf.o: ..\MY_CORE\my_idle.h
 ..\obj\rf.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\rf.o: ..\MQTT\mqttsrc\MQTTConnect.h
 ..\obj\rf.o: ..\MQTT\mqttsrc\MQTTPublish.h

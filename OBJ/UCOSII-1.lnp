@@ -47,6 +47,7 @@
 "..\obj\my_lcd_new.o"
 "..\obj\my_rf_new.o"
 "..\obj\my_light_new.o"
+"..\obj\my_idle.o"
 "..\obj\sys.o"
 "..\obj\delay.o"
 "..\obj\core_cm3.o"

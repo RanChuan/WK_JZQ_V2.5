@@ -68,6 +68,7 @@
 ..\obj\wk_json.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 ..\obj\wk_json.o: ..\MY_CORE\my_iot.h
 ..\obj\wk_json.o: ..\MY_CORE\my_lcd_new.h
+..\obj\wk_json.o: ..\MY_CORE\my_idle.h
 ..\obj\wk_json.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\wk_json.o: ..\MQTT\mqttsrc\MQTTConnect.h
 ..\obj\wk_json.o: ..\MQTT\mqttsrc\MQTTPublish.h

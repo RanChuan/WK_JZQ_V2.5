@@ -70,6 +70,7 @@
 ..\obj\my_cfg.o: ..\HARDWARE\LCD\lcd.h
 ..\obj\my_cfg.o: ..\MY_CORE\my_iot.h
 ..\obj\my_cfg.o: ..\MY_CORE\my_lcd_new.h
+..\obj\my_cfg.o: ..\MY_CORE\my_idle.h
 ..\obj\my_cfg.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\my_cfg.o: ..\MQTT\mqttsrc\MQTTConnect.h
 ..\obj\my_cfg.o: ..\MQTT\mqttsrc\MQTTPublish.h

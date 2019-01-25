@@ -39,12 +39,12 @@ u32 my_w5500tack[256];
 u32 my_autotack[128];
 u32 my_cfgtack[128];
 u32 my_iottack[128];
+u32 my_idletack[32];
 int main(void)
 {	
 	
 	SysPowerOn();
 	sys_cfg_init();
-	
 	CreateTask (my_key, 				0, &my_keytack[63],				1)	;					
 	CreateTask (my_lcd, 			0, &my_lcdtack[127],			2)	;	 				
 	CreateTask (my_rf_loop, 		0, &rf_looptack[255],			3)	;	 				
@@ -55,13 +55,10 @@ int main(void)
 	CreateTask (my_autocontrol, 0, &my_autotack[127],			8)	;		
 	CreateTask (my_cfg, 				0, &my_cfgtack[127],			9)	;		
 	CreateTask (my_iot, 				0, &my_iottack[127],		 10)	;		
-	OSStart ( );
+	CreateTask (idle_task, 				0, &my_idletack[31],		 31)	;		
+	OSStart ( );   
 
 }
 
  
- 
-
-
-
  

@@ -68,6 +68,7 @@
 ..\obj\malloc.o: ..\MY_CORE\my_lcd_new.h
 ..\obj\malloc.o: ..\MY_CORE\my_rf.h
 ..\obj\malloc.o: ..\HARDWARE\RF\rf.h
+..\obj\malloc.o: ..\MY_CORE\my_idle.h
 ..\obj\malloc.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\malloc.o: ..\MQTT\mqttsrc\MQTTConnect.h
 ..\obj\malloc.o: ..\MQTT\mqttsrc\MQTTPublish.h

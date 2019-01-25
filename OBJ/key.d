@@ -68,6 +68,7 @@
 ..\obj\key.o: ..\MY_CORE\my_lcd_new.h
 ..\obj\key.o: ..\MY_CORE\my_rf.h
 ..\obj\key.o: ..\HARDWARE\RF\rf.h
+..\obj\key.o: ..\MY_CORE\my_idle.h
 ..\obj\key.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\key.o: ..\MQTT\mqttsrc\MQTTConnect.h
 ..\obj\key.o: ..\MQTT\mqttsrc\MQTTPublish.h

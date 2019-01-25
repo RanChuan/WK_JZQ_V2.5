@@ -67,6 +67,7 @@
 ..\obj\dns.o: ..\MY_CORE\my_lcd_new.h
 ..\obj\dns.o: ..\MY_CORE\my_rf.h
 ..\obj\dns.o: ..\HARDWARE\RF\rf.h
+..\obj\dns.o: ..\MY_CORE\my_idle.h
 ..\obj\dns.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\dns.o: ..\MQTT\mqttsrc\MQTTConnect.h
 ..\obj\dns.o: ..\MQTT\mqttsrc\MQTTPublish.h

@@ -69,6 +69,7 @@
 ..\obj\baidu_iot.o: ..\MY_CORE\my_lcd_new.h
 ..\obj\baidu_iot.o: ..\MY_CORE\my_rf.h
 ..\obj\baidu_iot.o: ..\HARDWARE\RF\rf.h
+..\obj\baidu_iot.o: ..\MY_CORE\my_idle.h
 ..\obj\baidu_iot.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\baidu_iot.o: ..\MQTT\mqttsrc\MQTTConnect.h
 ..\obj\baidu_iot.o: ..\MQTT\mqttsrc\MQTTPublish.h

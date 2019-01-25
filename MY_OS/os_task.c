@@ -107,63 +107,124 @@ void  OSStart (void)
 
 
 
+u8 Task_AddFree (u8 pro)
+{
+	#if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
+		OS_CPU_SR  cpu_sr;
+	#endif
+	if (pro>=TASK_MAX_NUM)
+		return 0;
+	OS_ENTER_CRITICAL(); 
+	if (TCB_Table[pro].pTask)
+	{
+		TASK_Free|=0x80000000>>pro;//任务切换为就绪状态
+		TCB_Table[pro].LastTime=getSysRunTime();
+	}
+	OS_EXIT_CRITICAL();
+	return 1;
+}
+
+
+u8 Task_DelFree(u8 pro)
+{
+	#if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
+		OS_CPU_SR  cpu_sr;
+	#endif
+	if (pro>=TASK_MAX_NUM)
+		return 0;
+	OS_ENTER_CRITICAL(); 
+	if (TCB_Table[pro].pTask)
+	{
+		TASK_Free&=~(0x80000000>>pro);//清除任务就绪标志
+//		TCB_Table[pro].LastTime=getSysRunTime();
+	}
+	OS_EXIT_CRITICAL();
+	return 1;
+}
+
+
+
+
+
+
 					//任务挂起
 INT8U TaskPend (INT32U prio)
 {
- #if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
-		 OS_CPU_SR  cpu_sr;
- #endif
+	#if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
+		OS_CPU_SR  cpu_sr;
+	#endif
 	if (prio>=TASK_MAX_NUM)
 		return 0;
 	OS_ENTER_CRITICAL(); 
 	TCB_Table[prio].Pend++;
+	Task_DelFree(prio);
 	OS_EXIT_CRITICAL();
 	return 1;
 }
 			//任务恢复
 INT8U TaskRepend (INT32U prio)
 {
- #if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
-		 OS_CPU_SR  cpu_sr;
- #endif
+	#if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
+		OS_CPU_SR  cpu_sr;
+	#endif
 	if (prio>=TASK_MAX_NUM)
 		return 0;
 	OS_ENTER_CRITICAL(); 
 	if (TCB_Table[prio].Pend)
 		TCB_Table[prio].Pend--;
 	if (TCB_Table[prio].Pend==0)
-		TASK_Free|=0x80000000>>prio;//任务切换为就绪状态
+		Task_AddFree(prio);
 	OS_EXIT_CRITICAL();
 	return 1;
 }
 
+			//任务函数中切换任务
+void ToggleTasks(void)
+{
+	#if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
+		OS_CPU_SR  cpu_sr;
+	#endif
+	INT32U tt=TASK_MAX_NUM;
+	OS_ENTER_CRITICAL(); 
+	tt=GetZeroNum(TASK_Free);
+	if (tt!=OSPrioHighRdy)//如果有其他就绪任务
+	{
+		if (tt<TASK_MAX_NUM)
+		{
+			OSPrioHighRdy=tt;
+			OSTCBHighRdy=&TCB_Table[tt];
+			OSCtxSw();
+		}
+	}
+	OS_EXIT_CRITICAL();
+}
+
+
 
 
 //唤醒任务，通过优先级确定,这个函数中断调用可以唤醒任务
-//在中断中调用，不需要加不可调度保护，
+//在中断中调用，需要加不可调度保护，
 void TaskIntSendMsg(u8 pro,INT32U msg)
 {
 	if (pro>=TASK_MAX_NUM) return;
-	
+	#if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
+		OS_CPU_SR  cpu_sr;
+	#endif
 	INT32U tt=TASK_MAX_NUM;
+	OS_ENTER_CRITICAL(); 
 	if (TCB_Table[pro].pTask)
 	{
 		TCB_Table[pro].MYWork|=msg;
-		TASK_Free|=0x80000000>>pro;//任务切换为就绪状态
+		if (!(TCB_Table[pro].Pend))
+			Task_AddFree(pro);
 	}
+	OS_EXIT_CRITICAL();
 	
 	
 	//发送消息之后进行任务调度
 	if (OS_ONLYME) return;//此时不可进行调度
+	OS_ENTER_CRITICAL();
 	tt=GetZeroNum(TASK_Free);
-	if (TCB_Table[tt].pTask==0) return ;
-	if (TCB_Table[tt].Pend)	//任务处于挂起状态
-		return ;
-	if ((TCB_Table[tt].pTask==0)||(TCB_Table[tt].Pend)) 
-	{
-		TASK_Free&=~(0x80000000>>tt);//清除任务就绪标志
-		return ;
-	}
 	if (tt<OSPrioHighRdy)//如果当前任务优先级最高，强行跳转
 	{
 		if (tt<TASK_MAX_NUM)
@@ -173,7 +234,7 @@ void TaskIntSendMsg(u8 pro,INT32U msg)
 			OSIntCtxSw();
 		}
 	}
-	
+	OS_EXIT_CRITICAL();
 }
 
 			//给其他任务发送消息，任务调用这个函数可以唤醒其他任务
@@ -182,38 +243,22 @@ void TaskIntSendMsg(u8 pro,INT32U msg)
 u8 TaskSendMsg(u8 pro,INT32U msg)
 {
 	if (pro>=TASK_MAX_NUM) return 0;
-
- #if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
-		 OS_CPU_SR  cpu_sr;
- #endif
+	#if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
+		OS_CPU_SR  cpu_sr;
+	#endif
 	INT32U tt=TASK_MAX_NUM;
 	OS_ENTER_CRITICAL(); 
 	if (TCB_Table[pro].pTask)
 	{
 		TCB_Table[pro].MYWork|=msg;
-		TASK_Free|=0x80000000>>pro;//任务切换为就绪状态
+		if (!(TCB_Table[pro].Pend))
+			Task_AddFree(pro);
 	}
 	OS_EXIT_CRITICAL();
  
 	
 	//发送消息之后进行任务调度
-	tt=GetZeroNum(TASK_Free);
-	if ((TCB_Table[tt].pTask==0)||(TCB_Table[tt].Pend)) 
-	{
-		OS_ENTER_CRITICAL();
-		TASK_Free&=~(0x80000000>>tt);//清除任务就绪标志
-		OS_EXIT_CRITICAL();
-		return 0;
-	}
-	if (tt<OSPrioHighRdy)//如果有更高的优先级，强行跳转
-	{
-		if (tt<TASK_MAX_NUM)
-		{
-			OSPrioHighRdy=tt;
-			OSTCBHighRdy=&TCB_Table[tt];
-			OSCtxSw();
-		}
-	}
+	ToggleTasks();
 	return 1;
 
 }
@@ -225,9 +270,9 @@ u8 TaskSendMsg(u8 pro,INT32U msg)
 	//任务内部处理了消息之后调用这个函数开始休息
 void TaskMsgZero(void)
 {
- #if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
-		 OS_CPU_SR  cpu_sr;
- #endif
+	#if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
+		OS_CPU_SR  cpu_sr;
+	#endif
 	OS_ENTER_CRITICAL(); 
 	TCB_Table[OSPrioHighRdy].MYWork=0;
 	OS_EXIT_CRITICAL();
@@ -237,32 +282,19 @@ void TaskMsgZero(void)
 	//等待消息唤醒
 INT32U TaskGetMsg(void)
 {
- #if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
-		 OS_CPU_SR  cpu_sr;
- #endif
+	#if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
+		OS_CPU_SR  cpu_sr;
+	#endif
 	INT32U tt=TASK_MAX_NUM;
 	INT32U mypro=TASK_MAX_NUM;
 	OS_ENTER_CRITICAL(); 
 	mypro=OSPrioHighRdy;
 	TCB_Table[OSPrioHighRdy].MYWork=0;//休眠自己
-	TASK_Free&=~(0x80000000>>OSPrioHighRdy);//清除任务就绪标志
+	Task_DelFree(OSPrioHighRdy);
 	OS_EXIT_CRITICAL();
 	
 					//高优先级任务主动释放CPU在这里进行任务跳转
-	tt=GetZeroNum(TASK_Free);
-	if ((TCB_Table[tt].pTask==0)||(TCB_Table[tt].Pend)) 
-	{
-		OS_ENTER_CRITICAL();
-		TASK_Free&=~(0x80000000>>tt);//清除任务就绪标志
-		OS_EXIT_CRITICAL();
-	}
-	if ((tt>OSPrioHighRdy)&&(tt<TASK_MAX_NUM))//如果有其他比自己优先级低的已就绪任务，跳转
-	{
-		OSPrioHighRdy=tt;
-		OSTCBHighRdy=&TCB_Table[tt];
-		OSCtxSw();
-	}
-//	while(!TCB_Table[mypro].MYWork);//等待被唤醒，
+	ToggleTasks();
 	while(!TASK_Free);
 	return TCB_Table[OSPrioHighRdy].MYWork;
 }
@@ -271,25 +303,21 @@ u8 ONLYME_PRO=TASK_MAX_NUM;//记录进入不可调度状态的任务
 
 void OS_Enter_Onlyme(void)
 {
- #if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
-		 OS_CPU_SR  cpu_sr;
- #endif
+	#if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
+		OS_CPU_SR  cpu_sr;
+	#endif
 	OS_ENTER_CRITICAL(); 
 	OS_ONLYME++;
-//	if ((ONLYME_PRO==TASK_MAX_NUM)||(ONLYME_PRO==OSPrioHighRdy))
-		ONLYME_PRO=OSPrioHighRdy;					//找出造成CPU独占的任务
-//	else
-//	{
-//		while(1);
-//	}
+	ONLYME_PRO=OSPrioHighRdy;					//找出造成CPU独占的任务
 	OS_EXIT_CRITICAL();
 	
 }
+
 void OS_Exit_Onlyme(void)
 {
- #if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
-		 OS_CPU_SR  cpu_sr;
- #endif
+	#if OS_CRITICAL_METHOD == 3          /* Allocate storage for CPU status register */
+	 OS_CPU_SR  cpu_sr;
+	#endif
 	INT32U tt=TASK_MAX_NUM;
 	OS_ENTER_CRITICAL(); 
 	if (OS_ONLYME) OS_ONLYME--;
@@ -298,21 +326,7 @@ void OS_Exit_Onlyme(void)
 	OS_EXIT_CRITICAL();
 	
 	
-	tt=GetZeroNum(TASK_Free);
-	if ((TCB_Table[tt].pTask==0)||(TCB_Table[tt].Pend)) 
-	{
-		OS_ENTER_CRITICAL();
-		TASK_Free&=~(0x80000000>>tt);//清除任务就绪标志
-		OS_EXIT_CRITICAL();
-		return ;
-	}
-	if (tt<OSPrioHighRdy)//如果有高优先级的已就绪任务，跳转
-	{
-		OSPrioHighRdy=tt;
-		OSTCBHighRdy=&TCB_Table[tt];
-		OSCtxSw();
-	}
-
+	ToggleTasks();
 }
 
 

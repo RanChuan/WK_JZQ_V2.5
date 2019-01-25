@@ -68,6 +68,7 @@
 ..\obj\enternet.o: ..\MY_CORE\my_lcd_new.h
 ..\obj\enternet.o: ..\MY_CORE\my_rf.h
 ..\obj\enternet.o: ..\HARDWARE\RF\rf.h
+..\obj\enternet.o: ..\MY_CORE\my_idle.h
 ..\obj\enternet.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\enternet.o: ..\MQTT\mqttsrc\MQTTConnect.h
 ..\obj\enternet.o: ..\MQTT\mqttsrc\MQTTPublish.h

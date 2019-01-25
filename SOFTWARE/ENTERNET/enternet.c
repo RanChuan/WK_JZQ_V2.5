@@ -77,7 +77,7 @@ u8 tcp_connect(SOCKET s,u16 mycom,u8 *ip,u16 com)
 		return FALSE;//ip地址不合法，失败
 	}
 	
-	OS_ENTER_ONLYME();
+//	OS_ENTER_ONLYME();
 	
 	//设置端口0的端口号
 	Write_W5500_SOCK_2Byte(s, Sn_PORT,mycom);
@@ -99,7 +99,7 @@ u8 tcp_connect(SOCKET s,u16 mycom,u8 *ip,u16 com)
 	}while(--i);
 	if (i==0)
 	{
-		OS_EXIT_ONLYME();
+//		OS_EXIT_ONLYME();
 		return FALSE;
 	}
 	Write_W5500_SOCK_1Byte(s,Sn_CR,SN_CONNECT);//设置Socket为Connect模式
@@ -112,7 +112,7 @@ u8 tcp_connect(SOCKET s,u16 mycom,u8 *ip,u16 com)
 			break;
 		}
 	}while(--i);
-	OS_EXIT_ONLYME();
+//	OS_EXIT_ONLYME();
 	if (i==0)
 	{
 		return FALSE;

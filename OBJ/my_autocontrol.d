@@ -71,6 +71,7 @@
 ..\obj\my_autocontrol.o: ..\MY_CORE\my_lcd_new.h
 ..\obj\my_autocontrol.o: ..\MY_CORE\my_rf.h
 ..\obj\my_autocontrol.o: ..\HARDWARE\RF\rf.h
+..\obj\my_autocontrol.o: ..\MY_CORE\my_idle.h
 ..\obj\my_autocontrol.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\my_autocontrol.o: ..\MQTT\mqttsrc\MQTTConnect.h
 ..\obj\my_autocontrol.o: ..\MQTT\mqttsrc\MQTTPublish.h

@@ -93,7 +93,11 @@ void dbg_Interpreter(void)
 	}
 	else if (samestr((u8*)"mqtt",recvbuff+8))
 	{
-		dbg_mqtt(recvbuff+8+6); 
+		dbg_mqtt(recvbuff+8); 
+	}
+	else if (samestr((u8*)"task ",recvbuff+8))
+	{
+		dbg_task(recvbuff+8+5); 
 	}
 	else
 	{
@@ -343,6 +347,9 @@ void dbg_help(void)
 	ptxt="\t输入\"mqtt\"连接到百度云\r\n";
 	udp_send(1,DBG_IP,DBG_PORT,(u8*)ptxt,strlen((const char *)ptxt));
 
+	ptxt="\t输入\"task getidle\"查询运行异常的任务\r\n";
+	udp_send(1,DBG_IP,DBG_PORT,(u8*)ptxt,strlen((const char *)ptxt));
+
 	myfree(txtbuff);
 }
 
@@ -515,6 +522,26 @@ void dbg_mqtt(u8 *buff)
 	udp_send(1,DBG_IP,DBG_PORT,(u8*)txt,strlen(txt));
 	myfree(txt);
 }
+
+
+
+
+
+void dbg_task (u8 *buff)
+{
+	char *txtbuff=mymalloc(512);
+	if ( samestr((u8*)"getidle",buff))
+	{
+		sprintf(txtbuff,"运行异常的任务：%#X\r\n",getIdleTask());
+		udp_send(1,DBG_IP,DBG_PORT,(u8*)txtbuff,strlen(txtbuff));
+	}
+	myfree(txtbuff);
+}
+
+
+
+
+
 
 
 

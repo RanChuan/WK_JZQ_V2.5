@@ -69,6 +69,7 @@
 ..\obj\timer_1.o: ..\MY_CORE\my_lcd_new.h
 ..\obj\timer_1.o: ..\MY_CORE\my_rf.h
 ..\obj\timer_1.o: ..\HARDWARE\RF\rf.h
+..\obj\timer_1.o: ..\MY_CORE\my_idle.h
 ..\obj\timer_1.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\timer_1.o: ..\MQTT\mqttsrc\MQTTConnect.h
 ..\obj\timer_1.o: ..\MQTT\mqttsrc\MQTTPublish.h

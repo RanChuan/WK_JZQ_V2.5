@@ -21,6 +21,8 @@
 ************************************************************/
 
 
+//超调值
+#define OVERSHOOT_RANGE 3
 //1使用旧版，0使用新版，旧版串口屏设置是以1mg/m3为单位，新版以0.1mg/m3为单位
 #define __USE_OLD   0
 
@@ -45,7 +47,7 @@ void my_autocontrol (void * t)
 			now_humi=cj_data[19]+cj_data[20]/10.;
 			now_tvoc=cj_data[21]+cj_data[22]/10.;
 			
-									//空调的自动控制
+									/*空调的自动控制*/
 			if (now_temp>=Lcd_GetLimitData (0))
 			{
 				m_send[0]=2;
@@ -83,7 +85,7 @@ void my_autocontrol (void * t)
 				
 				send_warn(Get_MyAddr(),0,2,cj_data[17]);//发送报警到网口
 			}
-			else
+			else if ((now_temp+OVERSHOOT_RANGE<Lcd_GetLimitData (0))&&(now_temp>Lcd_GetLimitData (1)+OVERSHOOT_RANGE))
 			{
 				m_send[0]=2;
 				m_send[1]=2;m_send[2]=0;m_send[3]=0;
@@ -100,7 +102,16 @@ void my_autocontrol (void * t)
 				m_send[0]=1;m_send[1]=0;
 				send_messeg (LIT_MESSEG,m_send);
 			}
-									//除湿加湿的自动控制
+			else					//在超调区间，改报警为不报警，但是设备继续运行
+			{
+				m_send[2]=1;//闪烁的位置
+				m_send[0]=1;m_send[1]=0;
+				send_messeg (LIT_MESSEG,m_send);
+				m_send[2]=2;//闪烁的位置
+				m_send[0]=1;m_send[1]=0;
+				send_messeg (LIT_MESSEG,m_send);
+			}
+									/*除湿加湿的自动控制*/
 			if (now_humi>=Lcd_GetLimitData (2))
 			{
 				m_send[0]=3;
@@ -134,7 +145,7 @@ void my_autocontrol (void * t)
 				en_warning=4;
 				send_warn(Get_MyAddr(),0,4,cj_data[19]);//发送报警到网口
 			}
-			else   //除湿机关
+			else if ((now_humi+OVERSHOOT_RANGE<Lcd_GetLimitData (2))&&(now_humi>Lcd_GetLimitData (3)+OVERSHOOT_RANGE))
 			{
 				m_send[0]=3;
 				m_send[1]=2;m_send[2]=0;m_send[3]=0;
@@ -151,10 +162,18 @@ void my_autocontrol (void * t)
 				send_messeg (LIT_MESSEG,m_send);
 				m_send[2]=4;//闪烁的位置
 				m_send[0]=1;m_send[1]=0;
-				send_messeg (LIT_MESSEG,m_send);
-				
+				send_messeg (LIT_MESSEG,m_send);				
 			}
-									//空气净化机的自动控制
+			else
+			{
+				m_send[2]=3;//闪烁的位置
+				m_send[0]=1;m_send[1]=0;
+				send_messeg (LIT_MESSEG,m_send);
+				m_send[2]=4;//闪烁的位置
+				m_send[0]=1;m_send[1]=0;
+				send_messeg (LIT_MESSEG,m_send);
+			}
+									/*空气净化机的自动控制*/
 #if __USE_OLD==0
 			if (now_tvoc*10>=Lcd_GetLimitData (4))//TVOC上限是乘以10之后的数据，在这里把tvoc数据*10后比较,2018.11.19
 			{

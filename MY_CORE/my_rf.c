@@ -235,7 +235,6 @@ void my_rf_hand (void * t)
 {
 	u8 msg[MESSEG_DATA]={0};
 	u8 m_send[MESSEG_DATA]={0};//用来给网口返回控制信息
-	extern u8 IN_CFG;
 	u16 my_i=0;
 	u16 m=0;//操作失败次数；
 	u16 ret;
@@ -245,86 +244,37 @@ void my_rf_hand (void * t)
 	u8 newstate_;//newstate这个变量名可能是系统关键字，会自动改变
 	while(1)
 	{
-//		TaskRepend(3);
 		delay_ms(200);
 		if (get_messeg(RF_MESSEG,msg))//没有消息
 		{
-//			TaskSendMsg(3,8);
-			RF_SetFocus(3);
-//			TaskRepend(3);
 		}
 		else
 		{
 			RF_SetFocus(OSPrioHighRdy);
 			TaskPend(3);
-		}
-
-		if ((msg[0]!=0)&&(msg[1]==2)) 
-		{
-			RF_SetFocus(OSPrioHighRdy);
-			m=0;
-			id=(msg[2]<<8)|msg[3];
-			if (id==0)				//地址为0，控制全部同类设备
+			if ((msg[0]!=0)&&(msg[1]==2)) 
 			{
-				my_i=0;
-				while(my_i<GetDeviceNum(msg[0]))
-				{
-					if (GetDeviceState(GetNextDeviceaddr(msg[0],my_i))&DEVICEOFFLINE)
-					{
-						my_i++;//设备不在线
-						continue;
-					}
-					delay_ms(200);			
-											//获取新的控制设备的状态,高8位开关，低8位状态
-					newret=get_newstate(msg[4],msg[5],GetNextDeviceaddr(msg[0],my_i));newstate_=newret;newpower=(newret>>8);
-															//设备地址，设备类型，开关状态，附加参数
-					ret=Cmd_0x03 (GetNextDeviceaddr(msg[0],my_i),msg[0],newpower,newstate_);
-					if (ret==0)
-					{
-						Updata_devicestate(GetNextDeviceaddr(msg[0],my_i) ,newpower,newstate_);
-						Device_state_see(msg[0],newpower,newstate_);
-						my_i++;//控制成功，控制下一个
-					}
-					else
-					{
-						m++;if (m>10){m=0;my_i++;}//重试10次
-					}
-				}
-				//加一个控制恒湿机的循环
-				if (msg[0]==3||msg[0]==5)
+				m=0;
+				id=(msg[2]<<8)|msg[3];
+				if (id==0)				//地址为0，控制全部同类设备
 				{
 					my_i=0;
-					msg[0]=6;
-					while(my_i<GetDeviceNum(6))//一体机的个数
+					while(my_i<GetDeviceNum(msg[0]))
 					{
 						if (GetDeviceState(GetNextDeviceaddr(msg[0],my_i))&DEVICEOFFLINE)
 						{
 							my_i++;//设备不在线
 							continue;
 						}
-						delay_ms(200);	
-						newret=yt_newstate(msg[4],msg[5],GetNextDeviceaddr(msg[0],my_i));newpower=(newret>>8);
-						newstate_=newret;
+						delay_ms(200);			
+												//获取新的控制设备的状态,高8位开关，低8位状态
+						newret=get_newstate(msg[4],msg[5],GetNextDeviceaddr(msg[0],my_i));newstate_=newret;newpower=(newret>>8);
 																//设备地址，设备类型，开关状态，附加参数
 						ret=Cmd_0x03 (GetNextDeviceaddr(msg[0],my_i),msg[0],newpower,newstate_);
 						if (ret==0)
 						{
-							if (newstate_==99)
-							{
-								Updata_devicestate(GetNextDeviceaddr(msg[0],my_i) ,newpower,1);
-								Device_state_see(5,newpower,1);
-							}
-							else if (newstate_==1)
-							{
-								Updata_devicestate(GetNextDeviceaddr(msg[0],my_i) ,newpower,2);
-								Device_state_see(3,newpower,2);
-							}
-							else
-							{
-								Updata_devicestate(GetNextDeviceaddr(msg[0],my_i) ,newpower,0);
-								Device_state_see(3,newpower,newstate_);
-								Device_state_see(5,newpower,newstate_);
-							}
+							Updata_devicestate(GetNextDeviceaddr(msg[0],my_i) ,newpower,newstate_);
+							Device_state_see(msg[0],newpower,newstate_);
 							my_i++;//控制成功，控制下一个
 						}
 						else
@@ -332,51 +282,94 @@ void my_rf_hand (void * t)
 							m++;if (m>10){m=0;my_i++;}//重试10次
 						}
 					}
+					//加一个控制恒湿机的循环
+					if (msg[0]==3||msg[0]==5)
+					{
+						my_i=0;
+						msg[0]=6;
+						while(my_i<GetDeviceNum(6))//一体机的个数
+						{
+							if (GetDeviceState(GetNextDeviceaddr(msg[0],my_i))&DEVICEOFFLINE)
+							{
+								my_i++;//设备不在线
+								continue;
+							}
+							delay_ms(200);	
+							newret=yt_newstate(msg[4],msg[5],GetNextDeviceaddr(msg[0],my_i));newpower=(newret>>8);
+							newstate_=newret;
+																	//设备地址，设备类型，开关状态，附加参数
+							ret=Cmd_0x03 (GetNextDeviceaddr(msg[0],my_i),msg[0],newpower,newstate_);
+							if (ret==0)
+							{
+								if (newstate_==99)
+								{
+									Updata_devicestate(GetNextDeviceaddr(msg[0],my_i) ,newpower,1);
+									Device_state_see(5,newpower,1);
+								}
+								else if (newstate_==1)
+								{
+									Updata_devicestate(GetNextDeviceaddr(msg[0],my_i) ,newpower,2);
+									Device_state_see(3,newpower,2);
+								}
+								else
+								{
+									Updata_devicestate(GetNextDeviceaddr(msg[0],my_i) ,newpower,0);
+									Device_state_see(3,newpower,newstate_);
+									Device_state_see(5,newpower,newstate_);
+								}
+								my_i++;//控制成功，控制下一个
+							}
+							else
+							{
+								m++;if (m>10){m=0;my_i++;}//重试10次
+							}
+						}
+					}
 				}
-				
-			}
-			else //控制指定地址的设备
-			{
-				while (1)
+				else //控制指定地址的设备
 				{
-					delay_ms(200);			
-					if (CheckId (id)==0)
+					while (1)
 					{
-						//给网口返回执行结果，不存在指定的ip地址
-						m_send[0]=5;m_send[1]=ERR_NONEADDR>>8;m_send[2]=ERR_NONEADDR;
-						send_messeg(WK_MESSEG,m_send);
-						break;
-					}
-													//设备地址，设备类型，开关状态，附加参数
-					ret=Cmd_0x03 (id,GetDeviceType(id),msg[4],msg[5]);
-					if (ret==0)
-					{
-						Updata_devicestate(id ,msg[4],msg[5]);
-						Device_state_see(GetDeviceType(id),msg[4],msg[5]);
-						//给网口返回执行结果，成功
-						m_send[0]=5;m_send[1]=ret>>8;m_send[2]=ret;
-						send_messeg(WK_MESSEG,m_send);
-						
-						break;//控制成功，退出
-					}
-					else if (GetDeviceState(id)&DEVICEOFFLINE)
-					{
-						//给网口返回执行结果，设备不在线
-						m_send[0]=5;m_send[1]=ERR_OFFLINE>>8;m_send[2]=ERR_OFFLINE;
-						send_messeg(WK_MESSEG,m_send);
-						break;//设备不在线
-					}
-					else
-					{
-						m++;if (m>10){
-							//给网口返回执行结果，执行结果
-						m_send[0]=5;m_send[1]=ret>>8;m_send[2]=ret;
-						send_messeg(WK_MESSEG,m_send);
+						delay_ms(200);			
+						if (CheckId (id)==0)
+						{
+							//给网口返回执行结果，不存在指定的ip地址
+							m_send[0]=5;m_send[1]=ERR_NONEADDR>>8;m_send[2]=ERR_NONEADDR;
+							send_messeg(WK_MESSEG,m_send);
+							break;
+						}
+														//设备地址，设备类型，开关状态，附加参数
+						ret=Cmd_0x03 (id,GetDeviceType(id),msg[4],msg[5]);
+						if (ret==0)
+						{
+							Updata_devicestate(id ,msg[4],msg[5]);
+							Device_state_see(GetDeviceType(id),msg[4],msg[5]);
+							//给网口返回执行结果，成功
+							m_send[0]=5;m_send[1]=ret>>8;m_send[2]=ret;
+							send_messeg(WK_MESSEG,m_send);
 							
-						break;}//重试10次
+							break;//控制成功，退出
+						}
+						else if (GetDeviceState(id)&DEVICEOFFLINE)
+						{
+							//给网口返回执行结果，设备不在线
+							m_send[0]=5;m_send[1]=ERR_OFFLINE>>8;m_send[2]=ERR_OFFLINE;
+							send_messeg(WK_MESSEG,m_send);
+							break;//设备不在线
+						}
+						else
+						{
+							m++;if (m>10){
+								//给网口返回执行结果，执行结果
+							m_send[0]=5;m_send[1]=ret>>8;m_send[2]=ret;
+							send_messeg(WK_MESSEG,m_send);
+								
+							break;}//重试10次
+						}
 					}
 				}
 			}
+			RF_SetFocus(3);
 			TaskRepend(3);
 		}
 	}

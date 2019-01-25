@@ -254,8 +254,6 @@ void cfg_0x08 (u8 * data)
 		cfg_retern(data[4],ERR_DATAVALE);
 		return;
 	}
-
-	
 }
 
 
@@ -323,8 +321,8 @@ void exit_cfg(void)
 {
 	u8 meg[MESSEG_DATA]={0};
 	TaskRepend(5);//恢复消息循环
-	TaskRepend(3);//恢复消息循环
 	RF_SetFocus(3);
+	TaskRepend(3);//恢复消息循环
 	meg[0]=1;meg[1]=0;//灯
 	meg[2]=4;//4
 	send_messeg(LIT_MESSEG,meg);//

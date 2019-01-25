@@ -102,6 +102,7 @@ void dbg_setchanel (u8 *);
 void dbg_mqtt(u8 *buff);
 
 
+void dbg_task (u8 *buff);
 
 
 

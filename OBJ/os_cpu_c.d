@@ -68,6 +68,7 @@
 ..\obj\os_cpu_c.o: ..\MY_CORE\my_lcd_new.h
 ..\obj\os_cpu_c.o: ..\MY_CORE\my_rf.h
 ..\obj\os_cpu_c.o: ..\HARDWARE\RF\rf.h
+..\obj\os_cpu_c.o: ..\MY_CORE\my_idle.h
 ..\obj\os_cpu_c.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\os_cpu_c.o: ..\MQTT\mqttsrc\MQTTConnect.h
 ..\obj\os_cpu_c.o: ..\MQTT\mqttsrc\MQTTPublish.h

@@ -68,6 +68,7 @@
 ..\obj\delay.o: ..\MY_CORE\my_lcd_new.h
 ..\obj\delay.o: ..\MY_CORE\my_rf.h
 ..\obj\delay.o: ..\HARDWARE\RF\rf.h
+..\obj\delay.o: ..\MY_CORE\my_idle.h
 ..\obj\delay.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\delay.o: ..\MQTT\mqttsrc\MQTTConnect.h
 ..\obj\delay.o: ..\MQTT\mqttsrc\MQTTPublish.h

@@ -70,6 +70,7 @@
 ..\obj\my_messeg.o: ..\MY_CORE\my_lcd_new.h
 ..\obj\my_messeg.o: ..\MY_CORE\my_rf.h
 ..\obj\my_messeg.o: ..\HARDWARE\RF\rf.h
+..\obj\my_messeg.o: ..\MY_CORE\my_idle.h
 ..\obj\my_messeg.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\my_messeg.o: ..\MQTT\mqttsrc\MQTTConnect.h
 ..\obj\my_messeg.o: ..\MQTT\mqttsrc\MQTTPublish.h

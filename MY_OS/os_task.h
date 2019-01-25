@@ -21,6 +21,7 @@ typedef struct
 	INT32U MYDelay_ms;//本次想延时的时间，单位，ms，
 	INT32U MYWork;//我的工作，不为0时系统调度这个任务
 	INT32U Pend;	//知否挂起
+	INT32U LastTime;		//最后一次调度的时间
 }OS_TCB,*pOS_TCB;
 
  

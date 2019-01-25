@@ -68,6 +68,7 @@
 ..\obj\data_type.o: ..\MY_CORE\my_lcd_new.h
 ..\obj\data_type.o: ..\MY_CORE\my_rf.h
 ..\obj\data_type.o: ..\HARDWARE\RF\rf.h
+..\obj\data_type.o: ..\MY_CORE\my_idle.h
 ..\obj\data_type.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\data_type.o: ..\MQTT\mqttsrc\MQTTConnect.h
 ..\obj\data_type.o: ..\MQTT\mqttsrc\MQTTPublish.h
