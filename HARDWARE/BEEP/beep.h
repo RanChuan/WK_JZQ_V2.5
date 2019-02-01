@@ -23,11 +23,12 @@ void Beep_Play (jianpu *jianpu_);
 void set_jianpu(jianpu *j,char *tone_,char *time_);
 void jianpu_end(jianpu *j);
 
-void Load_song(void);
-void Load_song1(void);
-void Load_song2(void);
-void Load_song3(void);
-
+void Load_song(void);		//敢问路在何方
+void Load_song1(void);	//相思
+void Load_song2(void);	//清明上河图
+void Load_song3(void);	//琴师
+void Load_ShenPiZi (void);//生僻字
+	
 void Load_up(void);
 void Load_down(void);
 

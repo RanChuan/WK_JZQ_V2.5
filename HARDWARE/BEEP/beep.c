@@ -1154,6 +1154,99 @@ void Load_song3(void)
 
 
 
+//生僻字
+void Load_ShenPiZi (void)
+{
+	jianpu *j=mymalloc(sizeof(jianpu)*400);
+	jianpu *jj=j;
+	set_jianpu(jj,"1","2/2");
+	jj++;
+	set_jianpu(jj,"5","1/2");
+	jj++;
+	set_jianpu(jj,"6","2/2");
+	jj++;
+	set_jianpu(jj,"5","1/2");
+	jj++;
+	set_jianpu(jj,"6","1/1");
+	jj++;
+
+	set_jianpu(jj,"5","3/2");
+	jj++;
+	set_jianpu(jj,"6","1/1");
+	jj++;
+	set_jianpu(jj,"5","1/2");
+	jj++;
+	set_jianpu(jj,"6","1/1");
+	jj++;
+	set_jianpu(jj,"5","3/2");
+	jj++;
+	set_jianpu(jj,"6","1/1");
+	jj++;
+	set_jianpu(jj,"5","1/2");
+	jj++;
+	set_jianpu(jj,"6","1/1");
+	jj++;
+
+	set_jianpu(jj,"1","3/2");
+	jj++;
+	set_jianpu(jj,"2","1/2");
+	jj++;
+	set_jianpu(jj,"3","1/2");
+	jj++;
+	set_jianpu(jj,"5","3/2");
+	jj++;
+
+	set_jianpu(jj,"3","1/1");
+	jj++;
+	set_jianpu(jj,"5","1/2");
+	jj++;
+	set_jianpu(jj,"6","1/1");
+	jj++;
+	set_jianpu(jj,"5","1/2");
+	jj++;
+	set_jianpu(jj,"6","1/1");
+	jj++;
+
+	set_jianpu(jj,"6","1/2");
+	jj++;
+	set_jianpu(jj,"1~","1/1");
+	jj++;
+	set_jianpu(jj,"7","1/1");
+	jj++;
+	set_jianpu(jj,"6","1/1");
+	jj++;
+	set_jianpu(jj,"5","1/2");
+	jj++;
+	set_jianpu(jj,"6","1/2");
+	jj++;
+	set_jianpu(jj,"6","2/1");
+	jj++;
+	set_jianpu(jj,"6","2/1");
+	jj++;
+	set_jianpu(jj,"6","2/1");
+	jj++;
+	
+	//啊！
+	set_jianpu(jj,"0","3/2");
+	jj++;
+	set_jianpu(jj,"1~","1/2");
+	jj++;
+	set_jianpu(jj,"6","1/2");
+	jj++;
+	set_jianpu(jj,"5","1/2");
+	jj++;
+	set_jianpu(jj,"5","3/1");
+	jj++;
+	set_jianpu(jj,"5","2/1");
+	jj++;
+
+
+	jianpu_end(jj);
+	Beep_Play(j);
+	myfree(j);
+
+}
+
 
 
 
@@ -1229,7 +1322,8 @@ void jianpu_end(jianpu *j)
 void Beep_Play (jianpu *jianpu_)
 {
 	u16 i=0;
-	u16 frequency[8]={0,2615/4,2935/4,3295/4,3490/4,3920/4,4400/4,4940/4};
+	u16 frequency[8]={0,2615/3,2935/3,3295/3,3490/3,3920/3,4400/3,4940/3};
+//	u16 frequency[8]={0,2615*2,2935*2,3295*2,3490*2,3920*2,4400*2,4940*2};
 	
 	if (BEEP_BUSY==1) return;//正在播放，返回
 	BEEP_BUSY=1;//设置为忙
