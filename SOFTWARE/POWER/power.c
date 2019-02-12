@@ -10,8 +10,7 @@ void SysPowerOn (void)
 {
 	void Sys_Init(void);
 	Sys_Init();
-	if (os_init()!=0) { Load_down();
-		//Load_ShenPiZi();
+	if (os_init()!=0) { //Load_down();
 	}//不为0初始化失败，一般是文件系统失败
 	
 //	u8 *buf=malloc(100);

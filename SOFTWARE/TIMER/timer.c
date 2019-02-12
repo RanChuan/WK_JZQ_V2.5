@@ -83,8 +83,8 @@ void TIME3_Init(void)
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE); //时钟使能
 	
 	//定时器TIM3初始化
-	TIM_TimeBaseStructure.TIM_Period = 10-1; //10us
-	TIM_TimeBaseStructure.TIM_Prescaler =72-1; //设置用来作为TIMx时钟频率除数的预分频值
+	TIM_TimeBaseStructure.TIM_Period = arr; //10us
+	TIM_TimeBaseStructure.TIM_Prescaler =psc; //设置用来作为TIMx时钟频率除数的预分频值
 	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; //设置时钟分割:TDTS = Tck_tim
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //TIM向上计数模式
 	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure); //根据指定的参数初始化TIMx的时间基数单位
@@ -124,15 +124,14 @@ void TIME3_Init(void)
 
 
 extern void LIGHT_RUN_IRQ(void);
-extern void Beep_Run(void);
-extern u16 *sond;
+
 
 void TIM3_IRQHandler(void)   //TIM4中断
 {
 	if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)  //检查TIM3更新中断发生与否
 	{
 		TIM_ClearITPendingBit(TIM3, TIM_IT_Update  );  //清除TIMx更新中断标志 
-		if (sond) Beep_Run( );   //ojjm中断
+		//if (sond) Beep_Run( );   //ojjm中断
 		//LIGHT_RUN_IRQ();
 
 	}
