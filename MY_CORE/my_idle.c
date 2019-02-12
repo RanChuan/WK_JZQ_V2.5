@@ -4,6 +4,8 @@
 
 
 u32 IDLE=0;
+u32 LASTTIME[32]={0};
+u16 IDLETIMES[32]={0};
 
 void idle_task (void *t)
 {
@@ -16,9 +18,15 @@ void idle_task (void *t)
 		for (i=0;i<TASK_MAX_NUM;i++)
 		{
 			OS_ENTER_CRITICAL();
-			if (getSysRunTime()- TCB_Table[i].LastTime>60)
+			if (getSysRunTime()- TCB_Table[i].LastTime>60*2)
 			{
-				IDLE|=0x80000000>>i;
+				if (TCB_Table[i].pTask)
+				{
+					IDLE|=0x80000000>>i;
+					LASTTIME[i]=TCB_Table[i].LastTime;
+					IDLETIMES[i]++;
+					TaskRepend(i);
+				}
 			}
 			OS_EXIT_CRITICAL();
 		}
@@ -32,7 +40,11 @@ u32 getIdleTask(void)
 }
 
 
-
+void getKilledTask(u32 *lasttime,u32 *dietimes,u8 pro)
+{
+	*lasttime=LASTTIME[pro];
+	*dietimes=IDLETIMES[pro];
+}
 
 
 

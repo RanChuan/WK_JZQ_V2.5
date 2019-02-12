@@ -529,11 +529,18 @@ void dbg_mqtt(u8 *buff)
 
 void dbg_task (u8 *buff)
 {
+	u32 lasttime=0;u32 dietimes=0;
 	char *txtbuff=mymalloc(512);
 	if ( samestr((u8*)"getidle",buff))
 	{
 		sprintf(txtbuff,"运行异常的任务：%#X\r\n",getIdleTask());
 		udp_send(1,DBG_IP,DBG_PORT,(u8*)txtbuff,strlen(txtbuff));
+		for (u8 i=0;i<TASK_MAX_NUM;i++)
+		{
+			getKilledTask(&lasttime,&dietimes,i);
+			sprintf(txtbuff,"优先级为 %d 的任务死亡了 %d 次，最后一次死亡时间是：%d\r\n",i,dietimes,lasttime);
+			udp_send(1,DBG_IP,DBG_PORT,(u8*)txtbuff,strlen(txtbuff));
+		}
 	}
 	myfree(txtbuff);
 }
