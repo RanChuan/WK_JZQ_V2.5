@@ -170,22 +170,22 @@ void my_key (void *t)
 		{
 			if (statel[2]==0)
 			{
-//				Load_song3();//一首歌会占用很大的存储空间
+				Load_song3();//一首歌会占用很大的存储空间
 			}
-//			else if (statel[2]==1)
-//			{
-//				Load_song1();
-//			}
-//			else if (statel[2]==2)
-//			{
-//				Load_song();
-//			}
-//			else if (statel[2]==3)
-//			{
-//				Load_song2();
-//			}
+			else if (statel[2]==1)
+			{
+				Load_song1();
+			}
+			else if (statel[2]==2)
+			{
+				Load_song();
+			}
+			else if (statel[2]==3)
+			{
+				Load_song2();
+			}
 			statel[2]++;
-			if (statel[2]>0) statel[2]=0;
+			if (statel[2]>4) statel[2]=0;
 		}
 
 		if (key[3]==PRESS_SHORT) //按键4短按

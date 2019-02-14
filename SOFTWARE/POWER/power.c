@@ -42,6 +42,7 @@ void Sys_Init(void)
 //	NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x5000);
 	NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x2800);
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);// 设置中断优先级分组2
+	TIME2_Init(); 
 	TIME3_Init(); 
 	TIME4_Init(); 
 	BEEP_Init(); 

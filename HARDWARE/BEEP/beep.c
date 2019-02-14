@@ -1253,7 +1253,7 @@ void Beep_Play (jianpu *jianpu_)
 		i++;
 	}
 	sond[i*2+1]=0;//标记时长为0，这时播放停止
-	TIM_Cmd(TIM3,ENABLE); 
+	TIM_Cmd(TIM2,ENABLE); 
 }
 
 
@@ -1292,9 +1292,10 @@ void Beep_Run(void)
 			time=0;
 			sondtime=0;
 			myfree(sond);
+			sond=0;
 			BEEP=0;
 			BEEP_BUSY=0;
-			TIM_Cmd(TIM3, DISABLE);  //关闭定时器	
+			TIM_Cmd(TIM2, DISABLE);  //关闭定时器	
 		}
 	}
 }
