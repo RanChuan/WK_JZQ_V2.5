@@ -204,22 +204,25 @@ void lcd_sleep(void)
 	u8 meg[MESSEG_DATA]={0};
 	u8 light[MESSEG_DATA]={0};
 	static u8 lcd_light=0x3f;//屏幕的亮度
-	if (get_keystate(LCD_STATE_))
+	if (lcd_light)
+//	if (get_keystate(LCD_STATE_))
 	{
+		lcd_light=0;
 		meg[0]=3;meg[1]=1;
 		meg[2]=0;meg[3]=0;
 		meg[4]=1;meg[5]=0;
 		light[0]=1;light[1]=LCD_STATE_;
-		light[2]=0;//亮度改为0
+		light[2]=lcd_light;//亮度改为0
 		send_messeg(KEY_MESSEG,light);
 		light[0]=2;light[1]=1;
 		light[2]=LCD_STATE_;
 		send_messeg(LIT_MESSEG,light);
 		send_messeg(LCD_MESSEG,meg);//
-		lcd_light=get_keystate(LCD_STATE_);
+//		lcd_light=get_keystate(LCD_STATE_);
 	}
 	else
 	{
+		lcd_light=0x3f;
 		meg[0]=3;meg[1]=1;
 		meg[2]=lcd_light;meg[3]=0;
 		meg[4]=1;meg[5]=0;
@@ -394,7 +397,7 @@ void my_lcd_init (void)
 	RELAY=0;
 	delay_ms(1000);
 	Load_LCD();
-//	lcd_page(PAGE_MAIN);
+	lcd_page(PAGE_MAIN);
 }
 
 

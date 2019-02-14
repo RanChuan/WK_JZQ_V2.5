@@ -26,7 +26,7 @@
 
 
 //1使用旧版，0使用新版，旧版串口屏设置是以1mg/m3为单位，新版以0.1mg/m3为单位
-#define __USE_OLD   0
+#define __USE_OLD   1
 
 u8 HANDING=0;//手动操作是否在进行
 

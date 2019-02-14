@@ -24,7 +24,7 @@
 //超调值
 #define OVERSHOOT_RANGE 3
 //1使用旧版，0使用新版，旧版串口屏设置是以1mg/m3为单位，新版以0.1mg/m3为单位
-#define __USE_OLD   0
+#define __USE_OLD   1
 
 						//自动控制循环
 void my_autocontrol (void * t)
