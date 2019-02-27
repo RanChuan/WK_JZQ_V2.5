@@ -215,7 +215,6 @@ u8 net_get_comstate(u8 socket)
 }
 
 
-
 		//ÉèÖÃÍø¹Øip
 void net_set_getway(u8 *getwayip)
 {

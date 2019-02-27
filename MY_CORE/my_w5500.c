@@ -235,7 +235,7 @@ void EXTI4_IRQHandler(void)
 	}
 	if (NET_S2_STATE)
 	{
-		TaskIntSendMsg(10,1);
+		TaskIntSendMsg(7,1);
 	}
 
 

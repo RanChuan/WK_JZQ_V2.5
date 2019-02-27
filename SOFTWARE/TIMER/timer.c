@@ -32,6 +32,12 @@ void TIME4_Init(void)
 
 
 
+
+
+//		统计Ping操作的网络延时
+extern void PingCalculationDelayIRQ (void);
+
+
 void TIM4_IRQHandler(void)   //TIM4中断
 {
 	if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)  //检查TIM3更新中断发生与否
@@ -40,6 +46,7 @@ void TIM4_IRQHandler(void)   //TIM4中断
 		KEY_IRQHandler( );   //ojjm中断  
 		IOT_Hander();					//iot云定时器中断
 		RunTime_IRQHandler();		//记录系统运行时间
+		PingCalculationDelayIRQ();
 	}
 }
 
@@ -132,8 +139,6 @@ void TIM3_IRQHandler(void)   //TIM4中断
 	if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)  //检查TIM3更新中断发生与否
 	{
 		TIM_ClearITPendingBit(TIM3, TIM_IT_Update  );  //清除TIMx更新中断标志 
-		//if (sond) Beep_Run( );   //ojjm中断
-		//LIGHT_RUN_IRQ();
 
 	}
 }
@@ -146,7 +151,6 @@ void TIM2_IRQHandler(void)   //TIM4中断
 	{
 		TIM_ClearITPendingBit(TIM2, TIM_IT_Update  );  //清除TIMx更新中断标志 
 		if (sond) Beep_Run( );   //ojjm中断
-		//LIGHT_RUN_IRQ();
 
 	}
 }

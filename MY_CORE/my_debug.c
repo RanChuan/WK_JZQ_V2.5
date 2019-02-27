@@ -6,7 +6,7 @@
 #include "enternet.h"
 #include "dns.h"
 #include "baidu_iot.h"
-
+#include "ping.h"
 
 extern u8 NET_S1_STATE;
 
@@ -98,6 +98,10 @@ void dbg_Interpreter(void)
 	else if (samestr((u8*)"task ",recvbuff+8))
 	{
 		dbg_task(recvbuff+8+5); 
+	}
+	else if (samestr((u8*)"ping ",recvbuff+8))
+	{
+		dbg_ping(recvbuff+8+5); 
 	}
 	else
 	{
@@ -350,6 +354,9 @@ void dbg_help(void)
 	ptxt="\t输入\"task getidle\"查询运行异常的任务\r\n";
 	udp_send(1,DBG_IP,DBG_PORT,(u8*)ptxt,strlen((const char *)ptxt));
 
+	ptxt="\t输入\"ping [IP]\"使集中器 Ping 以[IP]为地址的主机\r\n";
+	udp_send(1,DBG_IP,DBG_PORT,(u8*)ptxt,strlen((const char *)ptxt));
+	
 	myfree(txtbuff);
 }
 
@@ -473,17 +480,13 @@ u8 getnumfstr(u8 *out,u8 *strin,u8 point,u8 length)
 	u8 i=0;
 	while (length--)
 	{
-		if ((*strin!=point)&&(*strin!=0))
+		while ((*strin!=point)&&(*strin!=0))
 		{
 			buff[i++]=*strin++;
 		}
-		else
-		{
-			buff[i]=0;
-			*out++=str2num(buff);
-			i=0;strin++;
-			
-		}
+		buff[i]=0;
+		*out++=str2num(buff);
+		i=0;strin++;			
 	}
 }
 
@@ -503,6 +506,7 @@ void dbg_getip(u8 *buff)
 		char *txt=mymalloc(200);
 		sprintf (txt,"域名：%s 的IP地址是：%d.%d.%d.%d\r\n",buff,getip[0],getip[1],getip[2],getip[3]);
 		udp_send(1,DBG_IP,DBG_PORT,(u8*)txt,strlen((const char *)txt));
+		myfree(txt);
 	}
 	else
 	{
@@ -533,12 +537,12 @@ void dbg_task (u8 *buff)
 	char *txtbuff=mymalloc(512);
 	if ( samestr((u8*)"getidle",buff))
 	{
-		sprintf(txtbuff,"运行异常的任务：%#X\r\n",getIdleTask());
+		sprintf(txtbuff,"运行异常的任务：%8X\r\n",getIdleTask());
 		udp_send(1,DBG_IP,DBG_PORT,(u8*)txtbuff,strlen(txtbuff));
 		for (u8 i=0;i<TASK_MAX_NUM;i++)
 		{
 			getKilledTask(&lasttime,&dietimes,i);
-			sprintf(txtbuff,"优先级为 %d 的任务死亡了 %d 次，最后一次死亡时间是：%d\r\n",i,dietimes,lasttime);
+			sprintf(txtbuff,"优先级为 %2d 的任务死亡了 %2d 次，最后一次死亡时间是：%d\r\n",i,dietimes,lasttime);
 			udp_send(1,DBG_IP,DBG_PORT,(u8*)txtbuff,strlen(txtbuff));
 		}
 	}
@@ -547,7 +551,30 @@ void dbg_task (u8 *buff)
 
 
 
-
+void dbg_ping (u8 *buff)
+{
+	u8 getip[4]={0};
+	u16 pingtime=0;
+	getnumfstr(getip,buff,'.',4);
+	if (DBG_COPY_TO_S1CK) 
+	{
+		udp_send(1,DBG_IP,DBG_PORT,(u8*)"请先关闭\"copy\"命令！！\r\n",22);
+		return;
+	}
+	pingtime=ping_auto(2,getip);
+	if (pingtime!=0xffff)
+	{
+		char *txt=mymalloc(200);
+		sprintf (txt,"IP地址 %d.%d.%d.%d 的网络延迟是 %d ms\r\n",getip[0],getip[1],getip[2],getip[3],pingtime);
+		udp_send(1,DBG_IP,DBG_PORT,(u8*)txt,strlen((const char *)txt));
+		myfree(txt);
+	}
+	else
+	{
+		udp_send(1,DBG_IP,DBG_PORT,(u8*)"Ping 操作失败T_T\r\n",17);
+	}
+	
+}
 
 
 

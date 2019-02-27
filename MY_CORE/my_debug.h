@@ -104,6 +104,7 @@ void dbg_mqtt(u8 *buff);
 
 void dbg_task (u8 *buff);
 
+void dbg_ping (u8 *buff);
 
 
 /**********Ò»Ð©¸¨Öúº¯Êý****************/

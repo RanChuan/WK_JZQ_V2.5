@@ -79,3 +79,4 @@
 ..\obj\my_debug.o: ..\MQTT\mqttsrc\MQTTPacket.h
 ..\obj\my_debug.o: ..\SOFTWARE\DHCP\dhcp.h
 ..\obj\my_debug.o: ..\SOFTWARE\BAIDU_IOT\baidu_iot.h
+..\obj\my_debug.o: ..\SOFTWARE\PING\ping.h

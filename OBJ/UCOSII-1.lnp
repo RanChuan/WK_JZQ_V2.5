@@ -27,6 +27,7 @@
 "..\obj\dns.o"
 "..\obj\baidu_iot.o"
 "..\obj\timer_1.o"
+"..\obj\ping.o"
 "..\obj\os_cpu_c.o"
 "..\obj\os_cpu_a.o"
 "..\obj\os_msg.o"

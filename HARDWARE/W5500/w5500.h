@@ -19,19 +19,31 @@
 #define SIPR	0x000f
 
 #define INTLEVEL	0x0013
-#define IR		0x0015
+#define Sn_PROTO  0x0014			//
+	#define IPPROTO_IP                   0        /**< Dummy for IP */
+	#define IPPROTO_ICMP                 1        /**< Control message protocol */
+	#define IPPROTO_IGMP                 2        /**< Internet group management protocol */
+	#define IPPROTO_GGP                  3        /**< Gateway^2 (deprecated) */
+	#define IPPROTO_TCP                  6        /**< TCP */
+	#define IPPROTO_PUP                  12       /**< PUP */
+	#define IPPROTO_UDP                  17       /**< UDP */
+	#define IPPROTO_IDP                  22       /**< XNS idp */
+	#define IPPROTO_ND                   77       /**< UNOFFICIAL net disk protocol */
+	#define IPPROTO_RAW                  255      /**< Raw IP packet */
+
+#define IR				0x0015
 	#define CONFLICT	0x80
 	#define UNREACH		0x40
 	#define PPPOE		0x20
 	#define MP			0x10
 
-#define IMR		0x0016
+#define IMR				0x0016
 	#define IM_IR7		0x80
 	#define IM_IR6		0x40
 	#define IM_IR5		0x20
 	#define IM_IR4		0x10
 
-#define SIR		0x0017
+#define SIR				0x0017
 	#define S7_INT		0x80
 	#define S6_INT		0x40
 	#define S5_INT		0x20
@@ -41,7 +53,7 @@
 	#define S1_INT		0x02
 	#define S0_INT		0x01
 
-#define SIMR	0x0018
+#define SIMR			0x0018
 	#define S7_IMR		0x80
 	#define S6_IMR		0x40
 	#define S5_IMR		0x20
@@ -81,6 +93,7 @@
 	#define MR_CLOSE		0x00
 	#define MR_TCP		0x01
 	#define MR_UDP		0x02
+	#define Sn_MR_IPRAW   0x03      /**< IP LAYER RAW SOCK */
 	#define MR_MACRAW		0x04
 
 #define Sn_CR		0x0001
@@ -109,6 +122,7 @@
 	#define SOCK_CLOSE_WAIT		0x1c
 	#define SOCK_UDP		0x22
 	#define SOCK_MACRAW		0x02
+	#define SOCK_IPRAW        0x32     /**< ip raw mode socket */
 
 	#define SOCK_SYNSEND	0x15
 	#define SOCK_SYNRECV	0x16
@@ -132,6 +146,7 @@
 #define Sn_TX_RD	0x0022
 #define Sn_TX_WR	0x0024
 #define Sn_RX_RSR	0x0026
+#define Sn_RX_RSR1	0x0027
 #define Sn_RX_RD	0x0028
 #define Sn_RX_WR	0x002a
 
