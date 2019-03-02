@@ -57,7 +57,6 @@ int main(void)
 	CreateTask (my_iot, 				0, &my_iottack[127],		 10)	;		
 	CreateTask (idle_task, 				0, &my_idletack[31],		 31)	;		
 	OSStart ( );   
-
 }
 
  

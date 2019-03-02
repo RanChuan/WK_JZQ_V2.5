@@ -754,7 +754,7 @@ void my_rf_deal (void * t)
 						{
 							send[6]=1;//升
 						}
-						else if ((EN_CONFIG[i*2+1]&DEVICEUP)==DEVICEUP)
+						else if ((EN_CONFIG[i*2+1]&DEVICEDOWN)==DEVICEDOWN)//2019.2.28 给上位机返回没有降状态的bug 
 						{
 							send[6]=2;//降
 						}
